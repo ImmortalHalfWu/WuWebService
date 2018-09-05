@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/MySqlSample/MySqlSample.iml" filepath="$PROJECT_DIR$/MySqlSample/MySqlSample.iml" />
       <module fileurl="file://$PROJECT_DIR$/WebService.iml" filepath="$PROJECT_DIR$/WebService.iml" />
     </modules>
   </component>

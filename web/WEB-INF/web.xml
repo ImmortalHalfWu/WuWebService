@@ -9,6 +9,14 @@
         Welcome to Tomcat
     </description>
 
+    <listener>
+        <listener-class>com.wu.immortal.half.listeners.StartInit</listener-class>
+    </listener>
+
+
+
+
+
     <servlet>
         <servlet-name>SayHellow</servlet-name>
         <servlet-class>com.wu.immortal.half.servlet.SayHellowServlet</servlet-class>
@@ -16,6 +24,109 @@
     <servlet-mapping>
         <servlet-name>SayHellow</servlet-name>
         <url-pattern>/sayhellow</url-pattern>
+    </servlet-mapping>
+
+
+    <!--
+        注册
+    -->
+    <servlet>
+        <servlet-name>Regist</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.RegistServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Regist</servlet-name>
+        <url-pattern>/regist</url-pattern>
+    </servlet-mapping>
+
+    <!--
+        登录
+    -->
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+
+    <!--
+        获取指定用户信息
+    -->
+    <servlet>
+        <servlet-name>GetUserInfo</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.GetUserInfoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetUserInfo</servlet-name>
+        <url-pattern>/getUserInfo</url-pattern>
+    </servlet-mapping>
+
+
+    <!--
+        获取指定用户的所有网页记录
+    -->
+    <servlet>
+        <servlet-name>GetAllHtml</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.GetAllHtmlsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetAllHtml</servlet-name>
+        <url-pattern>/getAllHtml</url-pattern>
+    </servlet-mapping>
+
+
+    <!--
+        添加网页监控
+    -->
+    <servlet>
+        <servlet-name>AddHtml</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.AddHtmlServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddHtml</servlet-name>
+        <url-pattern>/addHtml</url-pattern>
+    </servlet-mapping>
+
+
+    <!--
+        移除网页监控
+    -->
+    <servlet>
+        <servlet-name>RemoveHtml</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.RemoveHtmlServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RemoveHtml</servlet-name>
+        <url-pattern>/removeHtml</url-pattern>
+    </servlet-mapping>
+
+
+    <!--
+        修改网页监控信息
+    -->
+    <servlet>
+        <servlet-name>ChangeHtmlInfo</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.ChangeHtmlInfoServlet </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ChangeHtmlInfo</servlet-name>
+        <url-pattern>/changeHtmlInfo</url-pattern>
+    </servlet-mapping>
+
+
+    <!--
+        退出登录
+    -->
+    <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 
 </web-app>
