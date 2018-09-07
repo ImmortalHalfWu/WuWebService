@@ -3,7 +3,10 @@ package com.wu.immortal.half.servlet;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.wu.immortal.half.beans.ResultBeanEnum;
+import com.wu.immortal.half.beans.ServletBeans.ResultBean;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
+import com.wu.immortal.half.jsons.JsonWorkImpl;
+import com.wu.immortal.half.jsons.JsonWorkInterface;
 import com.wu.immortal.half.servlet.base.BaseServletServlet;
 import com.wu.immortal.half.utils.FinalString;
 import com.wu.immortal.half.utils.RequestUtil;
@@ -18,19 +21,21 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @WebServlet(name = "RegistServlet")
-public class RegistServlet extends HttpServlet {
+public class RegistServlet extends BaseServletServlet {
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected ResultBeanEnum post(TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
 
-        String requestBody = RequestUtil.getRequestBody(req);
-        if (FinalString.checkNull(requestBody)) {
-            // 请求体空异常
-            RequestUtil.callBackResult(ResultBeanEnum.REQUEST_ERRO_NULL_BODY, "", resp, new Gson());
-            return;
-        }
+        String resultJson = "";
+        ResultBeanEnum resultBeanEnum = null;
+        // todo 1，验证账号是否重复，2，初始化vip数据+userInfo 返回suc
 
-        // todo 解析请求数据并处理， 密码加密，插入数据库， 生成token并返回
 
+        return null;
+    }
+
+    @Override
+    protected boolean needAuthToken() {
+        return false;
     }
 }

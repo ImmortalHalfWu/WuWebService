@@ -1,10 +1,10 @@
 package com.wu.immortal.half.utils;
 
-import com.google.gson.Gson;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.beans.ResultBeanEnum;
 import com.wu.immortal.half.beans.ServletBeans.ResultBean;
+import com.wu.immortal.half.jsons.JsonWorkInterface;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -19,12 +19,14 @@ public class RequestUtil {
 
     public static void callBackResult(
             @NotNull ResultBeanEnum resultBeanEnum,
-            @Nullable String jsonBody,
             @NotNull HttpServletResponse response,
-            @NotNull Gson gson
+            @NotNull JsonWorkInterface jsonWorkInterface
     ) throws IOException {
-        ResultBean resultBean = ResultBean.newInstance(resultBeanEnum.getCode(), resultBeanEnum.getMsg(), jsonBody);
-        String resultJson = gson.toJson(resultBean);
+        ResultBean resultBean = ResultBean.newInstance(
+                resultBeanEnum.getCode(),
+                resultBeanEnum.getMsg(),
+                resultBeanEnum.getResultJsonBody());
+        String resultJson = jsonWorkInterface.toJsonString(resultBean);
         byte[] bytes = resultJson.getBytes(StandardCharsets.UTF_8);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(CONTENT_TYPE);

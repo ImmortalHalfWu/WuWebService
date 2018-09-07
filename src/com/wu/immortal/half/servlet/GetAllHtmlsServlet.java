@@ -2,7 +2,9 @@ package com.wu.immortal.half.servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.wu.immortal.half.beans.ResultBeanEnum;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
+import com.wu.immortal.half.jsons.JsonWorkInterface;
 import com.wu.immortal.half.servlet.base.BaseServletServlet;
 
 import javax.servlet.ServletException;
@@ -15,11 +17,8 @@ import java.nio.charset.StandardCharsets;
 
 @WebServlet(name = "GetAllHtmlsServlet")
 public class GetAllHtmlsServlet extends BaseServletServlet {
-
     @Override
-    protected String post(TokenInfoBean tokenInfoBean, String requestBody, Gson gson) throws ServletException, IOException {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("getAllHtmls_post", "success");
-        return jsonObject.toString();
+    protected ResultBeanEnum post(TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
+        return null;
     }
 }

@@ -40,10 +40,6 @@ public class ResultBean {
     }
 
 
-    public static ResultBean newInstance(int code, String msg) {
-        return newInstance(code, msg, null);
-    }
-
     public static ResultBean newInstance(int code, String msg, String body) {
         return new ResultBean(code, msg, body);
     }

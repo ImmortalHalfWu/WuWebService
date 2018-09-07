@@ -1,10 +1,16 @@
 package com.wu.immortal.half.utils;
 
+import com.sun.istack.internal.Nullable;
+import com.wu.immortal.half.beans.ResultBeanEnum;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
+import com.wu.immortal.half.jsons.JsonWorkImpl;
 import io.jsonwebtoken.*;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -79,4 +85,34 @@ public class JwtUtil {
         return new TokenInfoBean(phone, userId, endMilles);
     }
 
+
+    /**
+     * @return 验证token是否有效， 有效则返回token数据，无效则直接回复前端并返回null
+     */
+    public static @Nullable
+    TokenInfoBean authToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        // 解析token
+        String token = request.getHeader(FinalString.HEADER_KEY_ACCESS);
+        if (FinalString.checkNull(token)) {
+            // todo token 异常
+            RequestUtil.callBackResult(ResultBeanEnum.REQUEST_ERRO_TOKEN_ILLEGAL, response, JsonWorkImpl.newInstance());
+            return null;
+        }
+
+        // token认证
+        TokenInfoBean tokenInfoBean = JwtUtil.parseToken(token);
+        if (tokenInfoBean.checkNull()) {
+            // todo token 异常
+            RequestUtil.callBackResult(ResultBeanEnum.REQUEST_ERRO_TOKEN_ILLEGAL, response, JsonWorkImpl.newInstance());
+            return null;
+        }
+
+        if (tokenInfoBean.getEndMilles() < DataUtil.getNowTimeToLong()) {
+            // todo token 失效
+            RequestUtil.callBackResult(ResultBeanEnum.REQUEST_ERRO_TOKEN_END_TIME, response, JsonWorkImpl.newInstance());
+            return null;
+        }
+        return tokenInfoBean;
+    }
 }

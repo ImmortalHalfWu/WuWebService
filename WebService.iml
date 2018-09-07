@@ -57,5 +57,23 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/c3p0-0.9.1-pre6.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/fastjson.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/gson-2.8.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/javassist.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jboss-common-jdbc-wrapper.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/mysql-connector-java-8.0.12.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/protobuf-java-2.6.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/slf4j-api-1.6.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/jboss-common-jdbc-wrapper-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>

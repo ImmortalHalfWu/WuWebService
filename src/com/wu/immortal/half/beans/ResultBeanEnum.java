@@ -1,5 +1,6 @@
 package com.wu.immortal.half.beans;
 
+import com.sun.istack.internal.NotNull;
 import com.wu.immortal.half.utils.FinalString;
 
 public enum ResultBeanEnum {
@@ -19,6 +20,7 @@ public enum ResultBeanEnum {
 
     private int code;
     private String msg;
+    private String resultJsonBody = "";
 
     ResultBeanEnum(int code, String msg) {
         this.code = code;
@@ -31,5 +33,13 @@ public enum ResultBeanEnum {
 
     public String getMsg() {
         return msg;
+    }
+
+    public String getResultJsonBody() {
+        return resultJsonBody;
+    }
+
+    public void setResultJsonBody(@NotNull String resultJsonBody) {
+        this.resultJsonBody = resultJsonBody == null ? "" : resultJsonBody;
     }
 }

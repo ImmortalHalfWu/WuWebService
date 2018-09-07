@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.beans.ResultBeanEnum;
+import com.wu.immortal.half.beans.ServletBeans.ResultBean;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
+import com.wu.immortal.half.jsons.JsonWorkImpl;
+import com.wu.immortal.half.jsons.JsonWorkInterface;
 import com.wu.immortal.half.utils.RequestUtil;
 import com.wu.immortal.half.utils.DataUtil;
 import com.wu.immortal.half.utils.FinalString;
@@ -27,51 +30,35 @@ import java.io.IOException;
 @WebServlet(name = "BaseServletServlet")
 public abstract class BaseServletServlet extends HttpServlet {
 
-    private Gson gson = new Gson();
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        // 解析token
-        String token = request.getHeader(FinalString.HEADER_KEY_ACCESS);
-        if (FinalString.checkNull(token)) {
-            // todo token 异常
-            callBackResult(ResultBeanEnum.REQUEST_ERRO_TOKEN_ILLEGAL, "", response);
-            return;
-        }
+        TokenInfoBean tokenInfoBean = null;
 
-        // token认证
-        TokenInfoBean tokenInfoBean = JwtUtil.parseToken(token);
-        if (tokenInfoBean.checkNull()) {
-            // todo token 异常
-            callBackResult(ResultBeanEnum.REQUEST_ERRO_TOKEN_ILLEGAL, "", response);
-            return;
+        if (needAuthToken()) {
+            tokenInfoBean = JwtUtil.authToken(request, response);
+            if (tokenInfoBean == null) {
+                return;
+            }
         }
-
-        if (tokenInfoBean.getEndMilles() < DataUtil.getNowTimeToLong()) {
-            // todo token 失效
-            callBackResult(ResultBeanEnum.REQUEST_ERRO_TOKEN_END_TIME, "", response);
-            return;
-        }
-
 
         // 获取json数据
         String requestBody = RequestUtil.getRequestBody(request);
 
         if (FinalString.checkNull(requestBody)) {
             // todo 请求体空异常
-            callBackResult(ResultBeanEnum.REQUEST_ERRO_NULL_BODY, "", response);
+            callBackResult(ResultBeanEnum.REQUEST_ERRO_NULL_BODY, response);
             return;
         }
 
         try {
 
-            String resultString = post(tokenInfoBean, requestBody, gson);
-            callBackResult(ResultBeanEnum.REQUEST_SUCCESS, resultString, response);
+            ResultBeanEnum resultBeanEnum = post(tokenInfoBean, requestBody, JsonWorkImpl.newInstance());
+            callBackResult(resultBeanEnum, response);
 
         } catch (Exception e) {
             e.printStackTrace();
             // todo 子类异常，统一回复
-            callBackResult(ResultBeanEnum.REQUEST_ERRO_SERVER, "", response);
+            callBackResult(ResultBeanEnum.REQUEST_ERRO_SERVER, response);
         }
 
     }
@@ -80,18 +67,24 @@ public abstract class BaseServletServlet extends HttpServlet {
      * @param tokenInfoBean token数据，包括账号，userid
      * @return 返回的数据原样推给前端
      */
-    protected abstract @Nullable String post(
-            @NotNull TokenInfoBean tokenInfoBean,
+    protected abstract @Nullable
+    ResultBeanEnum post(
+            @Nullable TokenInfoBean tokenInfoBean,
             @NotNull String requestBody,
-            @NotNull Gson gson) throws ServletException, IOException;
+            @NotNull JsonWorkInterface gson) throws ServletException, IOException;
 
+    /**
+     * @return 是否需要认证token有效性
+     */
+    protected boolean needAuthToken() {
+        return true;
+    }
 
     private void callBackResult(
             @NotNull ResultBeanEnum resultBeanEnum,
-            @Nullable String jsonBody,
             @NotNull HttpServletResponse response) throws IOException {
 
-        RequestUtil.callBackResult(resultBeanEnum, jsonBody, response, gson);
+        RequestUtil.callBackResult(resultBeanEnum, response, JsonWorkImpl.newInstance());
 
     }
 }
