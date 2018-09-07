@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.wu.immortal.half.sql.bean.*;
 import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.sql.dao.impls.SQLDaoImpl;
+import com.wu.immortal.half.utils.LogUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,9 +29,10 @@ public class DaoManager {
     private SQLDaoImpl sqlDaoImpl;
     private Connection connection;
 
-    private DaoManager() throws SQLException {
+    private DaoManager() {
         connectSQL();
         sqlDaoImpl = SQLDaoImpl.getInstance();
+        LogUtil.i("DaoManager初始化完成");
     }
 
     public static void init() throws SQLException {
@@ -110,13 +112,15 @@ public class DaoManager {
                 String sqlUrl = "jdbc:mysql://localhost:3306/zhitou?useSSL=false&serverTimezone=GMT%2B8";
                 String sqlUser = "root";
                 String sqlPassWord = "mysql2b";
+                LogUtil.i("尝试连接数据库");
                 System.out.println("尝试连接数据库");
                 connection = DriverManager.getConnection(sqlUrl, sqlUser, sqlPassWord);
+                LogUtil.i("连接数据库成功");
                 System.out.println("连接数据库成功");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("连接数据库失败");
+            LogUtil.e("连接数据库失败", e);
             return false;
         }
         return true;
@@ -149,13 +153,16 @@ public class DaoManager {
     }
 
     public void release() {
+        LogUtil.i("DaoManager释放");
         sqlDaoImpl = null;
         try {
             if (!connection.isClosed()) {
                 connection.close();
             }
         } catch (SQLException e) {
+            LogUtil.e("DaoManager释放失败", e);
             e.printStackTrace();
         }
+        LogUtil.i("DaoManager释放完成");
     }
 }

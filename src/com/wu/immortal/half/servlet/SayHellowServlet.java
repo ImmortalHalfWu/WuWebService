@@ -1,7 +1,7 @@
 package com.wu.immortal.half.servlet;
 
 
-import com.wu.immortal.half.beans.ResultBeanEnum;
+import com.wu.immortal.half.beans.ResultBean;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
 import com.wu.immortal.half.servlet.base.BaseServletServlet;
@@ -13,7 +13,7 @@ import java.io.IOException;
 public class SayHellowServlet extends BaseServletServlet {
 
     @Override
-    protected ResultBeanEnum post(TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
+    protected ResultBean.ResultInfo post(TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
 //        JsonObject jsonObject = new JsonObject();
 //        jsonObject.addProperty("requestType","POST");
 //        byte[] bytes = gson.toJson(jsonObject).getBytes(StandardCharsets.UTF_8);

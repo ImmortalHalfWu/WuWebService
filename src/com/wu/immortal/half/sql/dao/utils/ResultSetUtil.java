@@ -24,7 +24,6 @@ public class ResultSetUtil {
      * @return bean实例
      */
     public static <T> T getBean(Class<T> calss, ResultSet resultSet) {
-        // TODO Auto-generated method stub
         // 创建对象
         T object = null;
         try {

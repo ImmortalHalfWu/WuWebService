@@ -2,6 +2,7 @@ package com.wu.immortal.half.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DataUtil {
@@ -23,5 +24,33 @@ public class DataUtil {
 
     public static long getNowTimeToLong() {
         return new Date().getTime();
+    }
+
+    /**
+     * 获取之后几天的时间
+     * @param dealyDay 几天
+     * @return long
+     */
+    public static long getDelayTimeForDay(int dealyDay) {
+        return getDelayTimeForField(Calendar.DAY_OF_YEAR, dealyDay);
+    }
+
+
+    public static long getDelayTimeForMonth(int dealyMonth) {
+        return getDelayTimeForField(Calendar.MONTH, dealyMonth);
+    }
+
+    private static long getDelayTimeForField(int calendarField, int delay) {
+        Calendar calendar = Calendar.getInstance();
+        try {
+            if (delay > 0) {
+                calendar.set(calendarField, calendar.get(calendarField) + delay);
+            }
+            return calendar.getTime().getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.e(calendarField + "__" + delay, e);
+        }
+        return calendar.getTime().getTime();
     }
 }

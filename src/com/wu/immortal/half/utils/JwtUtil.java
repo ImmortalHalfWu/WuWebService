@@ -1,7 +1,7 @@
 package com.wu.immortal.half.utils;
 
 import com.sun.istack.internal.Nullable;
-import com.wu.immortal.half.beans.ResultBeanEnum;
+import com.wu.immortal.half.beans.ResultBean;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
 import com.wu.immortal.half.jsons.JsonWorkImpl;
 import io.jsonwebtoken.*;
@@ -31,7 +31,7 @@ public class JwtUtil {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
         long endMillis = calendar.getTimeInMillis();
-        String newToken = createNewToken(new TokenInfoBean("13613571331", 1, endMillis));
+        String newToken = createNewToken(new TokenInfoBean("", "13613571331", 1, endMillis));
         System.out.println(newToken);
         System.out.println(parseToken(newToken).toString());
     }
@@ -41,13 +41,14 @@ public class JwtUtil {
      * @return token
      */
     public static String createNewToken(TokenInfoBean tokenInfoBean) {
+        LogUtil.i(tokenInfoBean);
 
         String phone = tokenInfoBean.getPhone();
         int userId = tokenInfoBean.getUserId();
         long endMillis = tokenInfoBean.getEndMilles();
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256; //指定签名的时候使用的签名算法，也就是header那部分，jjwt已经将这部分内容封装好了。
-        long nowMillis = System.currentTimeMillis();//生成JWT的时间
+        long nowMillis = DataUtil.getNowTimeToLong();//生成JWT的时间
         Date now = new Date(nowMillis);
 
         Map<String,Object> claims = new HashMap<>();//创建payload的私有声明（根据特定的业务需要添加，如果要拿这个做验证，一般是需要和jwt的接收方提前沟通好验证方式的）
@@ -73,7 +74,7 @@ public class JwtUtil {
 
     }
 
-    public static TokenInfoBean parseToken(String token) {
+    private static TokenInfoBean parseToken(String token) {
 
         Jws<Claims> headerClaimsJwt = Jwts.parser().setSigningKey(new SecretKeySpec(SECRET_BYTES, HA_256)).parseClaimsJws(token);
         Claims body = headerClaimsJwt.getBody();
@@ -82,7 +83,7 @@ public class JwtUtil {
         int userId = (int) body.getOrDefault(KEY_USER_ID, 0);
         long endMilles = body.getExpiration().getTime();
 
-        return new TokenInfoBean(phone, userId, endMilles);
+        return new TokenInfoBean(token, phone, userId, endMilles);
     }
 
 
@@ -93,26 +94,31 @@ public class JwtUtil {
     TokenInfoBean authToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         // 解析token
-        String token = request.getHeader(FinalString.HEADER_KEY_ACCESS);
-        if (FinalString.checkNull(token)) {
-            // todo token 异常
-            RequestUtil.callBackResult(ResultBeanEnum.REQUEST_ERRO_TOKEN_ILLEGAL, response, JsonWorkImpl.newInstance());
+        String token = request.getHeader(FinalUtil.HEADER_KEY_ACCESS);
+        LogUtil.i("解析token：");
+        if (FinalUtil.checkNull(token)) {
+            LogUtil.e("token 为 null");
+            //  token 异常
+            RequestUtil.callBackResult(ResultBean.REQUEST_ERRO_TOKEN_ILLEGAL, response, JsonWorkImpl.newInstance());
             return null;
         }
 
         // token认证
         TokenInfoBean tokenInfoBean = JwtUtil.parseToken(token);
         if (tokenInfoBean.checkNull()) {
-            // todo token 异常
-            RequestUtil.callBackResult(ResultBeanEnum.REQUEST_ERRO_TOKEN_ILLEGAL, response, JsonWorkImpl.newInstance());
+            LogUtil.e("token 数据不完整" + tokenInfoBean.toString());
+            //  token 异常
+            RequestUtil.callBackResult(ResultBean.REQUEST_ERRO_TOKEN_ILLEGAL, response, JsonWorkImpl.newInstance());
             return null;
         }
 
         if (tokenInfoBean.getEndMilles() < DataUtil.getNowTimeToLong()) {
-            // todo token 失效
-            RequestUtil.callBackResult(ResultBeanEnum.REQUEST_ERRO_TOKEN_END_TIME, response, JsonWorkImpl.newInstance());
+            LogUtil.e("token 失效" + tokenInfoBean.toString());
+            //  token 失效
+            RequestUtil.callBackResult(ResultBean.REQUEST_ERRO_TOKEN_END_TIME, response, JsonWorkImpl.newInstance());
             return null;
         }
+        LogUtil.i("解析token成功：" + token + "\n" + tokenInfoBean.toString());
         return tokenInfoBean;
     }
 }

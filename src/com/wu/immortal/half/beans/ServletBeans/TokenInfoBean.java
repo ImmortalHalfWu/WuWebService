@@ -1,14 +1,16 @@
 package com.wu.immortal.half.beans.ServletBeans;
 
-import com.wu.immortal.half.utils.FinalString;
+import com.wu.immortal.half.utils.FinalUtil;
 
 public class TokenInfoBean {
 
+    private final String token;
     private final String phone;
     private final int userId;
     private final long endMilles;
 
-    public TokenInfoBean(String phone, int userId, long endMilles) {
+    public TokenInfoBean(String token, String phone, int userId, long endMilles) {
+        this.token = token;
         this.phone = phone;
         this.userId = userId;
         this.endMilles = endMilles;
@@ -27,13 +29,18 @@ public class TokenInfoBean {
     }
 
     public boolean checkNull() {
-        return FinalString.checkNull(phone) || userId == 0 || endMilles == 0;
+        return FinalUtil.checkNull(phone) || userId == 0 || endMilles == 0;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     @Override
     public String toString() {
         return "TokenInfoBean{" +
-                "phone='" + phone + '\'' +
+                "token='" + token + '\'' +
+                ", phone='" + phone + '\'' +
                 ", userId=" + userId +
                 ", endMilles=" + endMilles +
                 '}';
