@@ -35,4 +35,14 @@ public class SqlQueryBean {
     public Class<?> getBeanClass() {
         return beanClass;
     }
+
+    @Override
+    public String toString() {
+        return "SqlQueryBean{" +
+                "beanClass=" + beanClass +
+                ", tableName='" + tableName + '\'' +
+                ", keys=" + keys +
+                ", values=" + values +
+                '}';
+    }
 }

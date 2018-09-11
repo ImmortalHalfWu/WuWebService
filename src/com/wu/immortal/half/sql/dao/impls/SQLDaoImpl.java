@@ -6,6 +6,7 @@ import com.wu.immortal.half.sql.dao.utils.DaoUtil;
 import com.wu.immortal.half.sql.dao.utils.SqlUtil;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class SQLDaoImpl implements SQLDao {
 
@@ -23,7 +24,7 @@ public class SQLDaoImpl implements SQLDao {
     }
 
     @Override
-    public void addToSQL(Connection connection, String tableName, Object bean) throws Exception {
+    public void addToSQL(Connection connection, String tableName, Object bean) throws SQLException {
         SqlUtil.insertObjectToSQL(
                 connection,
                 DaoUtil.object2SqlBean(tableName, bean)
@@ -31,12 +32,12 @@ public class SQLDaoImpl implements SQLDao {
     }
 
     @Override
-    public void deleteFromSQL(Connection connection, String tableName, Object bean) throws Exception {
+    public void deleteFromSQL(Connection connection, String tableName, Object bean) throws SQLException {
         SqlUtil.delObjectToSQL(connection, DaoUtil.object2SqlBean(tableName, bean));
     }
 
     @Override
-    public void updataToSQL(Connection connection, String tableName, Object newBean, Object oldBean) throws Exception {
+    public void updataToSQL(Connection connection, String tableName, Object newBean, Object oldBean) throws SQLException {
         SqlUtil.updataObjectToSQL(
                 connection,
                 DaoUtil.object2SqlBean(tableName, newBean),
@@ -45,7 +46,7 @@ public class SQLDaoImpl implements SQLDao {
     }
 
     @Override
-    public JSONArray selectFromSQL(Connection connection, String tableName, Object bean) throws Exception {
+    public JSONArray selectFromSQL(Connection connection, String tableName, Object bean) throws SQLException {
         return SqlUtil.selectObjectToSQL(connection, DaoUtil.object2SqlBean(tableName, bean));
     }
 }

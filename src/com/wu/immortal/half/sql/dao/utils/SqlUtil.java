@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.sql.bean.SqlQueryBean;
+import com.wu.immortal.half.utils.LogUtil;
 
 import java.sql.*;
 import java.util.Arrays;
@@ -34,9 +35,7 @@ public class SqlUtil {
     // =================================== =增= ================================================
     public static void insertObjectToSQL(@NotNull Connection connection, @NotNull SqlQueryBean sqlQueryBean)throws SQLException {
         String queryString = createInsertQueryString(QUERY_STRING_ADD, sqlQueryBean);
-        System.out.println(
-                queryString
-        );
+        LogUtil.i("插入语句：" + queryString);
 
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -50,6 +49,7 @@ public class SqlUtil {
 
             } catch (SQLException e) {
                 e.printStackTrace();
+                LogUtil.e("插入操作失败 ：" + sqlQueryBean.toString(), e);
                 throw e;
             } finally {
                 sqlClose(statement, resultSet);
@@ -82,6 +82,7 @@ public class SqlUtil {
     }
 
     private static PreparedStatement setInsertQueryValueData(@NotNull PreparedStatement statement, @NotNull Collection<Object> values) throws SQLException {
+        LogUtil.i("插入值：" + values);
         int parameterIndex = 0;
         for (Object next : values) {
             parameterIndex ++;
@@ -106,6 +107,7 @@ public class SqlUtil {
         String queryString = QUERY_STRING_DELETE
                 .replace(QUERY_PLEACE_HOLD_TABLE, sqlQueryBean.getTableName());
 
+
         Set<String> keys = sqlQueryBean.getKeys();
         Collection<Object> values = sqlQueryBean.getValues();
 
@@ -118,26 +120,31 @@ public class SqlUtil {
             queryString = queryString.replace(QUERY_STRING_WHERE, "").replace(QUERT_PLEACE_HOLD_WHERE, "");
         }
 
+        LogUtil.i("删除操作 ：" + queryString);
 
-        System.out.println(queryString);
-
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        if (connection != null) {
-
-            try {
-                statement = connection.prepareStatement(
-                        queryString
-                );
-                statement.executeUpdate();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                throw e;
-            } finally {
-                sqlClose(statement, resultSet);
-            }
+        try{
+            executeUpdate(connection, queryString);
+        } catch (SQLException e) {
+            LogUtil.e("删除操作失败 ：" + sqlQueryBean.toString(), e);
+            throw e;
         }
+//        PreparedStatement statement = null;
+//        ResultSet resultSet = null;
+//        if (connection != null) {
+//
+//            try {
+//                statement = connection.prepareStatement(
+//                        queryString
+//                );
+//                statement.executeUpdate();
+//
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//                throw e;
+//            } finally {
+//                sqlClose(statement, resultSet);
+//            }
+//        }
 
     }
 
@@ -148,7 +155,7 @@ public class SqlUtil {
             @NotNull SqlQueryBean sqlQueryBeanOldValue
     ) throws IllegalArgumentException, SQLException{
 
-        // 生成删除语句
+        // 生成更新语句
         String queryString = QUERY_STRING_UPADTA
                 .replace(QUERY_PLEACE_HOLD_TABLE, sqlQueryBeanNewValue.getTableName());
 
@@ -158,10 +165,12 @@ public class SqlUtil {
         Collection<Object> oldValues = sqlQueryBeanOldValue.getValues();
 
         if (oldKeys == null || oldKeys.size() == 0) {
+            LogUtil.e("更新操作失败 ：new: " + sqlQueryBeanNewValue + "\nold: " + sqlQueryBeanOldValue);
             throw new IllegalArgumentException("更新指定列失败，指定列信息为null");
         }
 
         if (newKeys == null || newValues.size() == 0) {
+            LogUtil.e("更新操作失败 ：new: " + sqlQueryBeanNewValue + "\nold: " + sqlQueryBeanOldValue);
             throw new IllegalArgumentException("更新指定列失败，新数据为null");
         }
 
@@ -169,31 +178,41 @@ public class SqlUtil {
                 .replace(QUERY_STRING_NEW_VALUE, createWhereQueryString(newKeys, newValues, QUERY_STRING_JOIN))
                 .replace(QUERY_STRING_OLD_VALUE, createWhereQueryString(oldKeys, oldValues, QUERY_STRING_JOIN_AND));
 
+        LogUtil.i("更新操作 ：" + queryString);
+        LogUtil.i("newBean ：" + sqlQueryBeanNewValue);
+        LogUtil.i("oldBean ：" + sqlQueryBeanOldValue);
 
-        System.out.println(queryString);
 
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        if (connection != null) {
-
-            try {
-                statement = connection.prepareStatement(
-                        queryString
-                );
-                statement.executeUpdate();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                throw e;
-            } finally {
-                sqlClose(statement, resultSet);
-            }
+        try{
+            executeUpdate(connection, queryString);
+        } catch (SQLException e) {
+            LogUtil.e("更新操作失败 ：new: " + sqlQueryBeanNewValue + "\nold: " + sqlQueryBeanOldValue, e);
+            throw e;
         }
+        executeUpdate(connection, queryString);
+//        PreparedStatement statement = null;
+//        ResultSet resultSet = null;
+//        if (connection != null) {
+//
+//            try {
+//                statement = connection.prepareStatement(
+//                        queryString
+//                );
+//                statement.executeUpdate();
+//
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//                throw e;
+//            } finally {
+//                sqlClose(statement, resultSet);
+//            }
+//        }
     }
 
 
     // =================================== =查= ================================================
     public static JSONArray selectObjectToSQL(@NotNull Connection connection, @NotNull SqlQueryBean sqlQueryBean) throws SQLException{
+        LogUtil.i("查表操作 ：" + sqlQueryBean.toString());
 
         // 生成查表语句
         String queryString = QUERY_STRING_SELECT
@@ -211,7 +230,7 @@ public class SqlUtil {
             queryString = queryString.replace(QUERY_STRING_WHERE, "").replace(QUERT_PLEACE_HOLD_WHERE, "");
         }
 
-        System.out.println(queryString);
+        LogUtil.i("查表操作 ：" + queryString);
 
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -226,10 +245,11 @@ public class SqlUtil {
 
                 // 查询结果转换为JsonArray
                 JSONArray beansJsonArry = ResultSetUtil.getBeansJsonArray(sqlQueryBean.getBeanClass(), resultSet);
-                System.out.println(beansJsonArry);
+                LogUtil.i("查表结果 ：" + beansJsonArry);
                 return beansJsonArry;
             } catch (SQLException e) {
                 e.printStackTrace();
+                LogUtil.e("查表异常 ：" , e );
                 throw e;
             } finally {
                 sqlClose(statement, resultSet);
@@ -240,9 +260,9 @@ public class SqlUtil {
 
     /**
      * 通过键值对生成约束语句
-     * @param keys
-     * @param values
-     * @return
+     * @param keys key
+     * @param values value
+     * @return 约束语句
      */
     private static String createWhereQueryString(@NotNull Set<String> keys, @NotNull Collection<Object> values, @NotNull String joinString) {
 
@@ -284,8 +304,8 @@ public class SqlUtil {
 
     /**
      * 获取约束条件中值得字符串， 区分String，bool， int
-     * @param value
-     * @return
+     * @param value value对象
+     * @return 对象类型对应数据库的值
      */
     private static String getWhereValueString(@NotNull Object value) {
         if (value instanceof Integer) {
@@ -298,6 +318,26 @@ public class SqlUtil {
         return ("'" + value + "'");
     }
 
+
+    private static void executeUpdate(Connection connection, String queryString) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        if (connection != null) {
+
+            try {
+                statement = connection.prepareStatement(
+                        queryString
+                );
+                statement.executeUpdate();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw e;
+            } finally {
+                sqlClose(statement, resultSet);
+            }
+        }
+    }
 
 
 

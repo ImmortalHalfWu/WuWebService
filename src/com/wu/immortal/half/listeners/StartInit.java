@@ -1,6 +1,7 @@
 package com.wu.immortal.half.listeners;
 
 import com.wu.immortal.half.jsons.JsonWorkImpl;
+import com.wu.immortal.half.sql.DaoAgent;
 import com.wu.immortal.half.sql.dao.DaoManager;
 import com.wu.immortal.half.utils.LogUtil;
 
@@ -14,7 +15,7 @@ public class StartInit implements ServletContextListener {
         LogUtil.i("服务器初始化......");
         // 初始化
         try {
-            DaoManager.init();
+            DaoAgent.init();
             JsonWorkImpl.newInstance();
         } catch (Exception e) {
             e.printStackTrace();

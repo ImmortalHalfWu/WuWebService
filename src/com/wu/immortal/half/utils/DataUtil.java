@@ -7,7 +7,8 @@ import java.util.Date;
 
 public class DataUtil {
 
-    private static final String TIME_FORMAT = "yyyy-MM-dd";
+    private static final int TIME_DEFAULT_VIP_ORDINARY_MONTH = 120;
+    private static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(TIME_FORMAT);
 
     public static String timeFormatToString(long milles) {
@@ -38,6 +39,10 @@ public class DataUtil {
 
     public static long getDelayTimeForMonth(int dealyMonth) {
         return getDelayTimeForField(Calendar.MONTH, dealyMonth);
+    }
+
+    public static long getDefaultOrdidnaryTimeToLong() {
+        return getDelayTimeForMonth(TIME_DEFAULT_VIP_ORDINARY_MONTH);
     }
 
     private static long getDelayTimeForField(int calendarField, int delay) {

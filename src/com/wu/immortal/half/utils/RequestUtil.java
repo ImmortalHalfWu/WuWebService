@@ -2,8 +2,6 @@ package com.wu.immortal.half.utils;
 
 import com.google.gson.JsonObject;
 import com.sun.istack.internal.NotNull;
-import com.wu.immortal.half.beans.ResultBeanEnum;
-import com.wu.immortal.half.beans.ServletBeans.ResultBean;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
 
 import javax.servlet.ServletOutputStream;
@@ -23,11 +21,7 @@ public class RequestUtil {
             @NotNull HttpServletResponse response,
             @NotNull JsonWorkInterface jsonWorkInterface
     ) throws IOException {
-        ResultBean resultBean = ResultBean.newInstance(
-                resultBeanEnum.getCode(),
-                resultBeanEnum.getMsg(),
-                resultBeanEnum.getJsonBody());
-        String resultJson = jsonWorkInterface.toJsonString(resultBean);
+        String resultJson = jsonWorkInterface.toJsonString(resultBeanEnum);
         byte[] bytes = resultJson.getBytes(StandardCharsets.UTF_8);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(CONTENT_TYPE);

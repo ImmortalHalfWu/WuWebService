@@ -24,16 +24,17 @@ public class JwtUtil {
 
     private static final String KEY_PHONE = "phone";
     private static final String KEY_USER_ID = "userId";
+    private static final String KEY_ISSUED_AT = "issuedTime";
     private static final String HA_256 = "HmacSHA256";
 
     public static void tokenTest() {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
-        long endMillis = calendar.getTimeInMillis();
-        String newToken = createNewToken(new TokenInfoBean("", "13613571331", 1, endMillis));
-        System.out.println(newToken);
-        System.out.println(parseToken(newToken).toString());
+//        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
+//        long endMillis = calendar.getTimeInMillis();
+//        String newToken = createNewToken(new TokenInfoBean("", "13613571331", 1, endMillis, issuedAt, issuedAtToken));
+//        System.out.println(newToken);
+//        System.out.println(parseToken(newToken).toString());
     }
 
     /**
@@ -54,6 +55,7 @@ public class JwtUtil {
         Map<String,Object> claims = new HashMap<>();//创建payload的私有声明（根据特定的业务需要添加，如果要拿这个做验证，一般是需要和jwt的接收方提前沟通好验证方式的）
         claims.put(KEY_USER_ID, userId);
         claims.put(KEY_PHONE, phone);
+        claims.put(KEY_ISSUED_AT, now.getTime());
 
         SecretKey secretKey = new SecretKeySpec(SECRET_BYTES, "HmacSHA256"); //生成签名的时候使用的秘钥secret,这个方法本地封装了的，一般可以从本地配置文件中读取，切记这个秘钥不能外露哦。它就是你服务端的私钥，在任何场景都不应该流露出去。一旦客户端得知这个secret, 那就意味着客户端是可以自我签发jwt了。
         //下面就是在为payload添加各种标准声明和私有声明了
@@ -66,8 +68,7 @@ public class JwtUtil {
                 .setClaims(claims)          //如果有私有声明，一定要先设置这个自己创建的私有的声明，这个是给builder的claim赋值，一旦写在标准的声明赋值之后，就是覆盖了那些标准的声明的
                 .signWith(signatureAlgorithm, secretKey);//设置签名使用的签名算法和签名使用的秘钥
         if (endMillis >= 0) {
-            long expMillis = nowMillis + endMillis;
-            Date exp = new Date(expMillis);
+            Date exp = new Date(endMillis);
             builder.setExpiration(exp);     //设置过期时间
         }
         return builder.compact();           //就开始压缩为xxxxxxxxxxxxxx.xxxxxxxxxxxxxxx.xxxxxxxxxxxxx这样的jwt
@@ -82,8 +83,10 @@ public class JwtUtil {
         String phone = body.getOrDefault(KEY_PHONE, "").toString();
         int userId = (int) body.getOrDefault(KEY_USER_ID, 0);
         long endMilles = body.getExpiration().getTime();
+        long tokenIssuedTime = body.getIssuedAt().getTime();
+        long issuedAt = (long) body.getOrDefault(KEY_ISSUED_AT, 0);
 
-        return new TokenInfoBean(token, phone, userId, endMilles);
+        return new TokenInfoBean(token, phone, userId, endMilles, issuedAt, tokenIssuedTime);
     }
 
 
@@ -105,9 +108,16 @@ public class JwtUtil {
 
         // token认证
         TokenInfoBean tokenInfoBean = JwtUtil.parseToken(token);
+
         if (tokenInfoBean.checkNull()) {
             LogUtil.e("token 数据不完整" + tokenInfoBean.toString());
             //  token 异常
+            RequestUtil.callBackResult(ResultBean.REQUEST_ERRO_TOKEN_ILLEGAL, response, JsonWorkImpl.newInstance());
+            return null;
+        }
+
+        if (tokenInfoBean.getIssuedAtClaims() != tokenInfoBean.getIssuedAtToken()) {
+            LogUtil.e("token 数据异常，tokon中签发时间与claims中不同" + tokenInfoBean.toString());
             RequestUtil.callBackResult(ResultBean.REQUEST_ERRO_TOKEN_ILLEGAL, response, JsonWorkImpl.newInstance());
             return null;
         }

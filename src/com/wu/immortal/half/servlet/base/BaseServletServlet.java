@@ -1,5 +1,6 @@
 package com.wu.immortal.half.servlet.base;
 
+import com.google.gson.JsonSyntaxException;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.beans.ResultBean;
@@ -7,6 +8,7 @@ import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
 import com.wu.immortal.half.beans.ServletLogBean;
 import com.wu.immortal.half.jsons.JsonWorkImpl;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
+import com.wu.immortal.half.sql.DaoAgent;
 import com.wu.immortal.half.utils.*;
 
 import javax.servlet.ServletException;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  *  统一使用post请求， Token添加在header中
@@ -27,19 +30,40 @@ public abstract class BaseServletServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        // 日志数据
         ServletLogBean servletLogBean = new ServletLogBean();
-//        JsonObject requestInfoJsonObject = RequestUtil.getRequestInfo(request);
         servletLogBean.setRequestInfo(RequestUtil.getRequestInfo(request).toString());
 
         TokenInfoBean tokenInfoBean = null;
 
+        // token认证
         if (needAuthToken()) {
             tokenInfoBean = JwtUtil.authToken(request, response);
             if (tokenInfoBean == null) {
                 LogUtil.e(servletLogBean);
                 return;
             }
+
+            try {
+                //  token匹配数据库信息，是否存在
+                if (!DaoAgent.hasTokenInSql(tokenInfoBean.getToken())) {
+                    LogUtil.e("Token验证失败，数据库中未找到" + tokenInfoBean.getToken());
+                    RequestUtil.callBackResult(ResultBean.REQUEST_ERRO_TOKEN_ILLEGAL, response, JsonWorkImpl.newInstance());
+                    return;
+                }
+                // token 过期
+                if (tokenInfoBean.getEndMilles() <= DataUtil.getNowTimeToLong()) {
+                    LogUtil.e("Token验证失败，已过期" + tokenInfoBean.getToken());
+                    RequestUtil.callBackResult(ResultBean.REQUEST_ERRO_TOKEN_END_TIME, response, JsonWorkImpl.newInstance());
+                    return;
+                }
+            } catch (SQLException e) {
+                LogUtil.e("Token验证失败，查找Token失败：" + tokenInfoBean.getToken(), e);
+                RequestUtil.callBackResult(ResultBean.REQUEST_ERRO_TOKEN_ILLEGAL, response, JsonWorkImpl.newInstance());
+                return;
+            }
         }
+
 
         servletLogBean.setTokenInfoBean(tokenInfoBean);
 
@@ -60,6 +84,9 @@ public abstract class BaseServletServlet extends HttpServlet {
             callBackResult(resultBean, response);
             LogUtil.i(servletLogBean.toString());
 
+        } catch (JsonSyntaxException e) {
+            LogUtil.e(servletLogBean.toString(), e);
+            callBackResult(ResultBean.REQUEST_ERRO_JSON, response);
         } catch (Exception e) {
             LogUtil.e(servletLogBean.toString(), e);
             // 子类异常，统一回复

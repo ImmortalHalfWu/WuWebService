@@ -90,7 +90,6 @@ public class ResultSetUtil {
 
                 Method method = calss.getDeclaredMethod(setMethodName, type);
                 Object fieldVlaue = resultSet.getObject(fieldName);
-                System.out.println(fieldName + ":" + fieldVlaue);
                 method.invoke(object, fieldVlaue);
             }
 

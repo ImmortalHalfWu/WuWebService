@@ -8,8 +8,9 @@ public class UserInfoBean extends BaseBean{
     private Boolean isLogin;
     private String passWord;
     private String token;
+    private String salt;
 
-    public UserInfoBean(Integer id, Integer userId, Integer vipId, String phone, String registTime, Boolean isLogin, String passWord, String token) {
+    public UserInfoBean(Integer id, Integer userId, Integer vipId, String phone, String registTime, Boolean isLogin, String passWord, String token, String salt) {
         super(id, userId);
         this.vipId = vipId;
         this.phone = phone;
@@ -17,6 +18,7 @@ public class UserInfoBean extends BaseBean{
         this.isLogin = isLogin;
         this.passWord = passWord;
         this.token = token;
+        this.salt = salt;
     }
 
     public Integer getVipId() {
@@ -43,6 +45,10 @@ public class UserInfoBean extends BaseBean{
         return token;
     }
 
+    public String getSalt() {
+        return salt;
+    }
+
     @Override
     public String toString() {
         return "UserInfoBean{" +
@@ -52,6 +58,7 @@ public class UserInfoBean extends BaseBean{
                 ", isLogin=" + isLogin +
                 ", passWord='" + passWord + '\'' +
                 ", token='" + token + '\'' +
+                ", salt='" + salt + '\'' +
                 '}';
     }
 
@@ -59,17 +66,28 @@ public class UserInfoBean extends BaseBean{
     public static UserInfoBean newInstance() {
         if (NULL_INSTANCE == null) {
             synchronized (UserInfoBean.class) {
-                NULL_INSTANCE = new UserInfoBean(null, null, null, null, null, null, null, null);
+                NULL_INSTANCE = new UserInfoBean(null, null, null, null, null, null, null, null, null);
             }
         }
         return NULL_INSTANCE;
     }
 
-    public static UserInfoBean newInstanceById(int id) {
-        return new UserInfoBean(id, null, null, null, null, null, null, null);
+    public static UserInfoBean newInstanceByPhone(String phone) {
+        return new UserInfoBean(null, null, null, phone, null, null, null, null, null);
+
     }
 
     public static UserInfoBean newInstanceByVipId(int vipId) {
-        return new UserInfoBean(null, null, vipId, null, null, null, null, null);
+        return new UserInfoBean(null, null, vipId, null, null, null, null, null, null);
     }
+
+    public static UserInfoBean newInstanceByToken(String token) {
+        return new UserInfoBean(null, null, null, null, null, null, null, token, null);
+    }
+
+    public static UserInfoBean newInstanceByTokenLogin(String token, boolean isLogin) {
+        return new UserInfoBean(null, null, null, null, null, isLogin, null, token, null);
+    }
+
+
 }

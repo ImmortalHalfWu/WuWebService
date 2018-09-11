@@ -36,8 +36,21 @@ public class UserVipInfoBean extends BaseBean{
         return vipType;
     }
 
+    @Override
+    public String toString() {
+        return "UserVipInfoBean{" +
+                "startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", vipTypeEnum=" + vipTypeEnum +
+                ", vipType=" + vipType +
+                '}';
+    }
+
     public static UserVipInfoBean newInstanceByVipType(Integer id, Integer userId, String startTime, String endTime, VIP_TYPE vipType) {
         return new UserVipInfoBean(id, userId, startTime, endTime, vipType.getCode());
+    }
+    public static UserVipInfoBean newInstanceByUserId(Integer userId) {
+        return new UserVipInfoBean(null, userId, null, null, null);
     }
 
     private static UserVipInfoBean NULL_INSTANCE;

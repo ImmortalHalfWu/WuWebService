@@ -1,8 +1,12 @@
 package com.wu.immortal.half.jsons;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.wu.immortal.half.utils.LogUtil;
+
+import java.lang.reflect.Type;
 
 public class JsonWorkImpl implements JsonWorkInterface {
 
@@ -17,29 +21,31 @@ public class JsonWorkImpl implements JsonWorkInterface {
         if (jsonWork == null) {
             synchronized (JsonWorkImpl.class) {
                 jsonWork = new JsonWorkImpl();
+                LogUtil.i("JsonWorkImpl初始化完成");
             }
         }
-        LogUtil.i("JsonWorkImpl初始化完成");
 
         return jsonWork;
     }
 
     @Override
-    public String toJsonString(Object object) {
+    public String toJsonString(Object object)  throws JsonSyntaxException {
         synchronized (this) {
-            String jsonString = gson.toJson(object);
-            LogUtil.i(jsonString);
-            return jsonString;
+            return gson.toJson(object);
         }
     }
 
     @Override
-    public <T> T jsonToBean(String jsonString) {
+    public JsonElement toJsonElement(Object object) throws JsonSyntaxException {
         synchronized (this) {
-            T o = gson.fromJson(jsonString, new TypeToken<T>() {
-            }.getType());
-            LogUtil.i(o);
-            return o;
+            return gson.toJsonTree(object);
+        }
+    }
+
+    @Override
+    public <T> T jsonToBean(String jsonString, Class<T> tClass) throws JsonSyntaxException{
+        synchronized (this) {
+            return gson.fromJson(jsonString, tClass);
         }
     }
 }

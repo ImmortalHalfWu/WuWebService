@@ -4,9 +4,9 @@ import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
 
 public class ServletLogBean {
 
-    private String requestInfo;
     private TokenInfoBean tokenInfoBean;
     private String requestBody;
+    private String requestInfo;
 
     public String getRequestInfo() {
         return requestInfo;
@@ -37,6 +37,7 @@ public class ServletLogBean {
         return "ServletLogBean{" +
                 "requestInfo='" + requestInfo + '\'' +
                 ", tokenInfoBean=" + tokenInfoBean +
+                ", requestBody='" + requestBody + '\'' +
                 '}';
     }
 }

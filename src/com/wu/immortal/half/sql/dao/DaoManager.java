@@ -47,7 +47,7 @@ public class DaoManager {
         return daoManager;
     }
 
-    public <T> List<T> selectSQLForBean(T bean) {
+    public <T> List<T> selectSQLForBean(T bean) throws SQLException {
         ArrayList<T> objects = new ArrayList<>();
         try {
             if (connectSQL()) {
@@ -69,41 +69,42 @@ public class DaoManager {
                 objects.trimToSize();
                 return objects;
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
+            throw e;
         }
         objects.trimToSize();
         return objects;
     }
 
-    public boolean insertBeanToSQL(Object bean) {
+    public boolean insertBeanToSQL(Object bean) throws SQLException {
         try {
             sqlDaoImpl.addToSQL(connection, findTableNameByBean(bean), bean);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
-        return false;
     }
 
-    public boolean deleteBeanForSQL(Object bean) {
+    public boolean deleteBeanForSQL(Object bean) throws SQLException {
         try {
             sqlDaoImpl.deleteFromSQL(connection, findTableNameByBean(bean), bean);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
-        return false;
     }
 
-    public boolean updataBeanForSQL(Object newBean, Object oldBean) {
+    public boolean updataBeanForSQL(Object newBean, Object oldBean) throws SQLException {
         try {
             sqlDaoImpl.updataToSQL(connection, findTableNameByBean(oldBean), newBean, oldBean);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
-        return false;
     }
 
     private boolean connectSQL() {
@@ -113,10 +114,8 @@ public class DaoManager {
                 String sqlUser = "root";
                 String sqlPassWord = "mysql2b";
                 LogUtil.i("尝试连接数据库");
-                System.out.println("尝试连接数据库");
                 connection = DriverManager.getConnection(sqlUrl, sqlUser, sqlPassWord);
                 LogUtil.i("连接数据库成功");
-                System.out.println("连接数据库成功");
             }
         } catch (SQLException e) {
             e.printStackTrace();
