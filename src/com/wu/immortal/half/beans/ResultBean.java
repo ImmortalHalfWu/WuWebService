@@ -16,6 +16,11 @@ public class ResultBean {
     public static final ResultInfo REQUEST_ERRO_SQL = new ResultInfo(FinalUtil.REQUEST_ERRO_SQL, "数据库异常");
     public static final ResultInfo REQUEST_ERRO_NOT_FOUND_PHONE = new ResultInfo(FinalUtil.REQUEST_ERRO_NOT_FOUND_PHONE, "用户尚未注册");
     public static final ResultInfo REQUEST_ERRO_PASSWORD = new ResultInfo(FinalUtil.REQUEST_ERRO_PASSWORD, "用户名或密码错误");
+    public static final ResultInfo REQUEST_ERRO_SMS_FAIL = new ResultInfo(FinalUtil.REQUEST_ERRO_SMS_FAIL, "发送短信验证码失败");
+    public static final ResultInfo REQUEST_ERRO_SMS_PHONE = new ResultInfo(FinalUtil.REQUEST_ERRO_SMS_PHONE, "手机号格式错误");
+
+
+
 
 
 

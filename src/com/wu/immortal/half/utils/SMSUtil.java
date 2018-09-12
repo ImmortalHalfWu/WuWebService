@@ -18,7 +18,7 @@ public class SMSUtil {
      * @param code  要发送的验证码
      * @return 发送是否成功
      */
-    public static boolean sendSMS(String code, String phone) {
+    public static boolean sendSMS(int code, String phone) {
         LogUtil.i("开始发送短信： phone = " + phone + "__验证码 = " + code);
         GetRequest getRequest;
         try {

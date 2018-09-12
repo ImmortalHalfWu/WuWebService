@@ -68,7 +68,7 @@ public abstract class BaseServletServlet extends HttpServlet {
         servletLogBean.setTokenInfoBean(tokenInfoBean);
 
         // 获取json数据
-        String requestBody = RequestUtil.getRequestBody(request);
+        String requestBody = RequestUtil.getRequestBody(request).trim();
 
         if (FinalUtil.checkNull(requestBody)) {
             // 请求体空异常

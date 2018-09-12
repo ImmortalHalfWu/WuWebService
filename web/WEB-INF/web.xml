@@ -13,10 +13,6 @@
         <listener-class>com.wu.immortal.half.listeners.StartInit</listener-class>
     </listener>
 
-
-
-
-
     <servlet>
         <servlet-name>SayHellow</servlet-name>
         <servlet-class>com.wu.immortal.half.servlet.SayHellowServlet</servlet-class>
@@ -49,6 +45,30 @@
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    <!--
+        退出登录
+    -->
+    <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <!--
+        发送短信验证码
+    -->
+    <servlet>
+        <servlet-name>SendSms</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.base.SendSMSServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SendSms</servlet-name>
+        <url-pattern>/sendSMS</url-pattern>
     </servlet-mapping>
 
 
@@ -114,19 +134,6 @@
     <servlet-mapping>
         <servlet-name>ChangeHtmlInfo</servlet-name>
         <url-pattern>/changeHtmlInfo</url-pattern>
-    </servlet-mapping>
-
-
-    <!--
-        退出登录
-    -->
-    <servlet>
-        <servlet-name>Logout</servlet-name>
-        <servlet-class>com.wu.immortal.half.servlet.LogoutServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Logout</servlet-name>
-        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 
 </web-app>

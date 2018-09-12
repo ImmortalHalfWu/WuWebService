@@ -1,5 +1,8 @@
 package com.wu.immortal.half.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class FinalUtil {
 
     public static final String HEADER_KEY_ACCESS = "Access";
@@ -16,6 +19,8 @@ public class FinalUtil {
     public static final int REQUEST_ERRO_SQL = 10008;              // 数据库异常
     public static final int REQUEST_ERRO_NOT_FOUND_PHONE = 10009;              // 用户不存在
     public static final int REQUEST_ERRO_PASSWORD = 10010;              // 密码错误
+    public static final int REQUEST_ERRO_SMS_FAIL = 10011;          //发送短信验证码失败
+    public static final int REQUEST_ERRO_SMS_PHONE = 10012;          //手机号格式错误
 
 
 
@@ -29,4 +34,18 @@ public class FinalUtil {
     public static boolean checkNull(String text) {
         return text == null || text.length() == 0;
     }
+
+    public static boolean isPhone(String phone) {
+        String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
+        if (phone.length() != 11) {
+            return false;
+        } else {
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(phone);
+            boolean isMatch = m.matches();
+            LogUtil.e(isMatch);
+            return isMatch;
+        }
+    }
+
 }
