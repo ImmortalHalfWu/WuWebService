@@ -64,11 +64,23 @@
     -->
     <servlet>
         <servlet-name>SendSms</servlet-name>
-        <servlet-class>com.wu.immortal.half.servlet.base.SendSMSServlet</servlet-class>
+        <servlet-class>com.wu.immortal.half.servlet.SendSMSServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>SendSms</servlet-name>
         <url-pattern>/sendSMS</url-pattern>
+    </servlet-mapping>
+
+    <!--
+        修改密码
+    -->
+    <servlet>
+        <servlet-name>resetPassWordServlet</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.ResetPassWordServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>resetPassWordServlet</servlet-name>
+        <url-pattern>/reset</url-pattern>
     </servlet-mapping>
 
 

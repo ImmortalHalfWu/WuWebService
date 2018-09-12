@@ -89,5 +89,9 @@ public class UserInfoBean extends BaseBean{
         return new UserInfoBean(null, null, null, null, null, isLogin, null, token, null);
     }
 
+    public static UserInfoBean newInstanceByReset(String passWord, String salt) {
+        return new UserInfoBean(null, null, null, null, null, null, passWord, "", salt);
+    }
+
 
 }

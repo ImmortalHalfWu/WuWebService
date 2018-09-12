@@ -1,9 +1,10 @@
-package com.wu.immortal.half.servlet.base;
+package com.wu.immortal.half.servlet;
 
 import com.google.gson.JsonObject;
 import com.wu.immortal.half.beans.ResultBean;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
+import com.wu.immortal.half.servlet.base.BaseServletServlet;
 import com.wu.immortal.half.sql.bean.UserInfoBean;
 import com.wu.immortal.half.utils.*;
 
