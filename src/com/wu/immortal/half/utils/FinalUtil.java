@@ -25,8 +25,9 @@ public class FinalUtil {
 
 
 
-
-
+    public static final int SCAN_FREQUENCY_ORDINARY = 30;
+    public static final int SCAN_FREQUENCY_SENIOR = 5;
+    public static final int SCAN_FREQUENCY_SUPER = 1;
 
 
 

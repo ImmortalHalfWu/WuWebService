@@ -2,8 +2,8 @@ package com.wu.immortal.half.sql.bean;
 
 public class BaseBean {
 
-    private final Integer id;
-    private final Integer userId;
+    private Integer id;
+    private Integer userId;
 
     public BaseBean(Integer id, Integer userId) {
         this.id = id;
@@ -16,5 +16,13 @@ public class BaseBean {
 
     public Integer getUserId() {
         return userId;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

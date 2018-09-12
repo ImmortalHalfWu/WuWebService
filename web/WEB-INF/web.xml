@@ -98,15 +98,15 @@
 
 
     <!--
-        获取指定用户的所有网页记录
+        获取指定用户的扫描列表
     -->
     <servlet>
-        <servlet-name>GetAllHtml</servlet-name>
-        <servlet-class>com.wu.immortal.half.servlet.GetAllHtmlsServlet</servlet-class>
+        <servlet-name>GetAllScanInfo</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.ScanGetAllInfoServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>GetAllHtml</servlet-name>
-        <url-pattern>/getAllHtml</url-pattern>
+        <servlet-name>GetAllScanInfo</servlet-name>
+        <url-pattern>/getAllScanInfo</url-pattern>
     </servlet-mapping>
 
 
@@ -114,12 +114,12 @@
         添加网页监控
     -->
     <servlet>
-        <servlet-name>AddHtml</servlet-name>
-        <servlet-class>com.wu.immortal.half.servlet.AddHtmlServlet</servlet-class>
+        <servlet-name>AddScanInfo</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.ScanAddServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>AddHtml</servlet-name>
-        <url-pattern>/addHtml</url-pattern>
+        <servlet-name>AddScanInfo</servlet-name>
+        <url-pattern>/addScan</url-pattern>
     </servlet-mapping>
 
 
@@ -127,12 +127,12 @@
         移除网页监控
     -->
     <servlet>
-        <servlet-name>RemoveHtml</servlet-name>
-        <servlet-class>com.wu.immortal.half.servlet.RemoveHtmlServlet</servlet-class>
+        <servlet-name>DeleteScan</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.ScanDeleteServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>RemoveHtml</servlet-name>
-        <url-pattern>/removeHtml</url-pattern>
+        <servlet-name>DeleteScan</servlet-name>
+        <url-pattern>/deleteScan</url-pattern>
     </servlet-mapping>
 
 
@@ -140,12 +140,12 @@
         修改网页监控信息
     -->
     <servlet>
-        <servlet-name>ChangeHtmlInfo</servlet-name>
-        <servlet-class>com.wu.immortal.half.servlet.ChangeHtmlInfoServlet </servlet-class>
+        <servlet-name>ChangeScanInfo</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.ScanChangeInfoServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>ChangeHtmlInfo</servlet-name>
-        <url-pattern>/changeHtmlInfo</url-pattern>
+        <servlet-name>ChangeScanInfo</servlet-name>
+        <url-pattern>/changeScanInfo</url-pattern>
     </servlet-mapping>
 
 </web-app>

@@ -93,5 +93,4 @@ public class UserInfoBean extends BaseBean{
         return new UserInfoBean(null, null, null, null, null, null, passWord, "", salt);
     }
 
-
 }

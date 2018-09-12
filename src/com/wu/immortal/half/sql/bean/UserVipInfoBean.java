@@ -38,6 +38,9 @@ public class UserVipInfoBean extends BaseBean{
     }
 
     public VIP_TYPE getVipTypeEnum() {
+        if (vipTypeEnum == null && vipType != null) {
+            vipTypeEnum = VIP_TYPE.valueOf(vipType);
+        }
         return vipTypeEnum;
     }
 

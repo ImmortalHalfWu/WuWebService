@@ -2,6 +2,7 @@ package com.wu.immortal.half.sql.bean;
 
 
 import com.wu.immortal.half.sql.bean.enums.ORDER_TYPE;
+import com.wu.immortal.half.utils.FinalUtil;
 
 public class ScanInfoBean extends BaseBean{
 
@@ -24,6 +25,10 @@ public class ScanInfoBean extends BaseBean{
         this.orderType = orderType;
     }
 
+//    public ScanInfoBean(String scanUrl, String tagName, Integer orderType, Integer frequency) {
+//        this(null, null, scanUrl, tagName, orderType, frequency, false);
+//    }
+
     public String getScanUrl() {
         return scanUrl;
     }
@@ -33,6 +38,9 @@ public class ScanInfoBean extends BaseBean{
     }
 
     public ORDER_TYPE getOrderTypeEnum() {
+        if (orderTypeEnum == null && orderType != null) {
+            orderTypeEnum = ORDER_TYPE.valueOf(orderType);
+        }
         return orderTypeEnum;
     }
 
@@ -46,6 +54,35 @@ public class ScanInfoBean extends BaseBean{
 
     public Integer getOrderType() {
         return orderType;
+    }
+
+
+    public void setScanUrl(String scanUrl) {
+        this.scanUrl = scanUrl;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
+    public void setOrderTypeEnum(ORDER_TYPE orderTypeEnum) {
+        this.orderTypeEnum = orderTypeEnum;
+    }
+
+    public void setFrequency(Integer frequency) {
+        this.frequency = frequency;
+    }
+
+    public void setCanUser(Boolean canUser) {
+        this.canUser = canUser;
+    }
+
+    public void setOrderType(Integer orderType) {
+        this.orderType = orderType;
+    }
+
+    public static void setNullInstance(ScanInfoBean nullInstance) {
+        NULL_INSTANCE = nullInstance;
     }
 
     private static ScanInfoBean NULL_INSTANCE;
@@ -68,5 +105,25 @@ public class ScanInfoBean extends BaseBean{
     public static ScanInfoBean newInstanceByUrl(
             String scanUrl) {
         return new ScanInfoBean(null, null, scanUrl, null, null, null, null);
+    }
+
+    public boolean checkNull() {
+        return FinalUtil.checkNull(scanUrl)
+                || FinalUtil.checkNull(tagName)
+                || frequency == null
+//                || canUser == null
+                || orderType == null;
+    }
+
+    @Override
+    public String toString() {
+        return "ScanInfoBean{" +
+                "scanUrl='" + scanUrl + '\'' +
+                ", tagName='" + tagName + '\'' +
+                ", orderTypeEnum=" + orderTypeEnum +
+                ", frequency=" + frequency +
+                ", canUser=" + canUser +
+                ", orderType=" + orderType +
+                '}';
     }
 }
