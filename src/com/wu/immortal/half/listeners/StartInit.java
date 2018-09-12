@@ -4,6 +4,7 @@ import com.wu.immortal.half.jsons.JsonWorkImpl;
 import com.wu.immortal.half.sql.DaoAgent;
 import com.wu.immortal.half.sql.dao.DaoManager;
 import com.wu.immortal.half.utils.LogUtil;
+import com.wu.immortal.half.utils.SMSUtil;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

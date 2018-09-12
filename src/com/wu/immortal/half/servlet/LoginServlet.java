@@ -23,7 +23,7 @@ public class LoginServlet extends BaseServletServlet {
     @Override
     protected ResultBean.ResultInfo post(TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
 
-        // todo 1, 账号密码是否正确，2，返回用户数据+vip数据
+        // 1, 账号密码是否正确，2,更新数据库状态，3，返回用户数据+vip数据
         UserInfoBean userInfoBean = gson.jsonToBean(requestBody, UserInfoBean.class);
 
         if (userInfoBean == null || FinalUtil.checkNull(userInfoBean.getPhone()) || FinalUtil.checkNull(userInfoBean.getPassWord())) {
@@ -83,16 +83,10 @@ public class LoginServlet extends BaseServletServlet {
         long vipEndTime = Long.valueOf(userVipInfoBean.getEndTime());
 
         //  验证成功， 生成token+用户信息+vip信息
-        long nowTimeToLong = DataUtil.getNowTimeToLong();
-        tokenInfoBean = new TokenInfoBean(
-                "",
-                userInfoBeanBySql.getPhone(),
-                userInfoBeanBySql.getId(),
-                vipEndTime,
-                nowTimeToLong, nowTimeToLong);
-
         // 刷新用户Token值， 跟新登录状态
-        String token = JwtUtil.createNewToken(tokenInfoBean);
+        String token = JwtUtil.createNewToken(userInfoBeanBySql.getPhone(),
+                userInfoBeanBySql.getId(),
+                vipEndTime);
         try {
             boolean upadtaSuc = DaoAgent.updataBeanForSQL(
                 UserInfoBean.newInstanceByTokenLogin(token, true),

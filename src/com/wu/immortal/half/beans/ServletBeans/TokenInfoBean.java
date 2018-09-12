@@ -8,24 +8,24 @@ public class TokenInfoBean {
     private final String phone;
     private final int userId;
     private final long endMilles;
-    private final long issuedAtClaims;
-    private final long issuedAtToken;
+    private final String issuerInToken;
+    private final String issuerInClaim;
+
 
     /**
      * @param token  token字符串
      * @param phone 账号
      * @param userId 数据库id
      * @param endMilles 有效期至
-     * @param issuedAtClaims 签发时间
-     * @param issuedAtToken 签发时间
+     * @param issuerInClaim
      */
-    public TokenInfoBean(String token, String phone, int userId, long endMilles, long issuedAtClaims, long issuedAtToken) {
+    public TokenInfoBean(String token, String phone, int userId, long endMilles, String issuerInToken, String issuerInClaim) {
         this.token = token;
         this.phone = phone;
         this.userId = userId;
         this.endMilles = endMilles;
-        this.issuedAtToken = issuedAtToken;
-        this.issuedAtClaims = issuedAtClaims;
+        this.issuerInToken = issuerInToken;
+        this.issuerInClaim = issuerInClaim;
     }
 
     public String getPhone() {
@@ -41,19 +41,23 @@ public class TokenInfoBean {
     }
 
     public boolean checkNull() {
-        return FinalUtil.checkNull(phone) || userId == 0 || endMilles == 0 || issuedAtClaims == 0 || issuedAtToken == 0;
+        return FinalUtil.checkNull(phone)
+                || userId == 0
+                || endMilles == 0
+                || FinalUtil.checkNull(issuerInToken)
+                || FinalUtil.checkNull(issuerInClaim);
     }
 
     public String getToken() {
         return token;
     }
 
-    public long getIssuedAtClaims() {
-        return issuedAtClaims;
+    public String getIssuerInToken() {
+        return issuerInToken;
     }
 
-    public long getIssuedAtToken() {
-        return issuedAtToken;
+    public String getIssuerInClaim() {
+        return issuerInClaim;
     }
 
     @Override
@@ -63,8 +67,8 @@ public class TokenInfoBean {
                 ", phone='" + phone + '\'' +
                 ", userId=" + userId +
                 ", endMilles=" + endMilles +
-                ", issuedAtClaims=" + issuedAtClaims +
-                ", issuedAtToken=" + issuedAtToken +
+                ", issuerInToken='" + issuerInToken + '\'' +
+                ", issuerInClaim='" + issuerInClaim + '\'' +
                 '}';
     }
 }

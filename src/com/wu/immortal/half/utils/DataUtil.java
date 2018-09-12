@@ -8,19 +8,36 @@ import java.util.Date;
 public class DataUtil {
 
     private static final int TIME_DEFAULT_VIP_ORDINARY_MONTH = 120;
-    private static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(TIME_FORMAT);
+    private static final String TIME_FORMAT_ALL = "yyyy-MM-dd HH:mm:ss";
+    private static final String TIME_FORMAT_YMD = "yyyy-MM-dd";
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT_ALL = new SimpleDateFormat(TIME_FORMAT_ALL);
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT_YMD = new SimpleDateFormat(TIME_FORMAT_YMD);
 
-    public static String timeFormatToString(long milles) {
-        return SIMPLE_DATE_FORMAT.format(new Date(milles)).trim();
+    /**
+     * long 转yyyy-MM-dd HH:mm:ss
+     * @param milles 时间戳
+     * @return yyyy-MM-dd HH:mm:ss格式
+     */
+    public static String timeFormatAllToString(long milles) {
+        return SIMPLE_DATE_FORMAT_ALL.format(new Date(milles)).trim();
+    }
+
+    /**
+     * long 转yyyy-MM-dd
+     * @param milles 时间戳
+     * @return yyyy-MM-dd 格式
+     */
+    public static String timeFormatYMDToString(long milles) {
+        return SIMPLE_DATE_FORMAT_YMD.format(new Date(milles)).trim();
+
     }
 
     public static long timeFormatToLong(String time) throws ParseException {
-        return SIMPLE_DATE_FORMAT.parse(time).getTime();
+        return SIMPLE_DATE_FORMAT_ALL.parse(time).getTime();
     }
 
     public static String getNowTimeToString() {
-        return SIMPLE_DATE_FORMAT.format(new Date()).trim();
+        return SIMPLE_DATE_FORMAT_ALL.format(new Date()).trim();
     }
 
     public static long getNowTimeToLong() {

@@ -2,6 +2,7 @@ package com.wu.immortal.half.sql.bean;
 
 
 import com.wu.immortal.half.sql.bean.enums.VIP_TYPE;
+import com.wu.immortal.half.utils.DataUtil;
 
 public class UserVipInfoBean extends BaseBean{
 
@@ -9,11 +10,19 @@ public class UserVipInfoBean extends BaseBean{
     private String endTime;
     private VIP_TYPE vipTypeEnum;
     private Integer vipType;
+    private String startTimeFormat;
+    private String endTimeFormat;
 
     public UserVipInfoBean(Integer id, Integer userId, String startTime, String endTime, Integer vipType) {
         super(id, userId);
         this.startTime = startTime;
         this.endTime = endTime;
+        if (startTime != null) {
+            startTimeFormat = DataUtil.timeFormatYMDToString(Long.valueOf(startTime));
+        }
+        if (endTime != null) {
+            endTimeFormat = DataUtil.timeFormatYMDToString(Long.valueOf(endTime));
+        }
         if (vipType != null) {
             this.vipTypeEnum = VIP_TYPE.valueOf(vipType);
             this.vipType = vipTypeEnum.getCode();
@@ -34,6 +43,14 @@ public class UserVipInfoBean extends BaseBean{
 
     public Integer getVipType() {
         return vipType;
+    }
+
+    public String getStartTimeFormat() {
+        return startTimeFormat;
+    }
+
+    public String getEndTimeFormat() {
+        return endTimeFormat;
     }
 
     @Override
@@ -62,4 +79,5 @@ public class UserVipInfoBean extends BaseBean{
         }
         return NULL_INSTANCE;
     }
+
 }
