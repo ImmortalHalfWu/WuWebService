@@ -86,16 +86,23 @@ public class JwtUtil {
 
     private static TokenInfoBean parseToken(String token) {
 
-        Jws<Claims> headerClaimsJwt = Jwts.parser().setSigningKey(new SecretKeySpec(SECRET_BYTES, HA_256)).parseClaimsJws(token);
-        Claims body = headerClaimsJwt.getBody();
+        try {
 
-        String phone = body.getOrDefault(KEY_PHONE, "").toString();
-        int userId = (int) body.getOrDefault(KEY_USER_ID, 0);
-        long endMilles = body.getExpiration().getTime();
-        String issuerInToken = body.getIssuer();
-        String issuerInClaim= body.getOrDefault(KEY_ISSUER, "").toString();
+            Jws<Claims> headerClaimsJwt = Jwts.parser().setSigningKey(new SecretKeySpec(SECRET_BYTES, HA_256)).parseClaimsJws(token);
+            Claims body = headerClaimsJwt.getBody();
 
-        return new TokenInfoBean(token, phone, userId, endMilles, issuerInToken, issuerInClaim);
+            String phone = body.getOrDefault(KEY_PHONE, "").toString();
+            int userId = (int) body.getOrDefault(KEY_USER_ID, 0);
+            long endMilles = body.getExpiration().getTime();
+            String issuerInToken = body.getIssuer();
+            String issuerInClaim= body.getOrDefault(KEY_ISSUER, "").toString();
+
+            return new TokenInfoBean(token, phone, userId, endMilles, issuerInToken, issuerInClaim);
+        } catch (Exception e) {
+            LogUtil.e("解析Token异常，token = " + token, e);
+            return null;
+        }
+
     }
 
 
@@ -107,7 +114,7 @@ public class JwtUtil {
 
         // 解析token
         String token = request.getHeader(FinalUtil.HEADER_KEY_ACCESS);
-        LogUtil.i("解析token：");
+        LogUtil.i("解析token：" + token);
         if (FinalUtil.checkNull(token)) {
             LogUtil.e("token 为 null");
             //  token 异常
@@ -118,8 +125,8 @@ public class JwtUtil {
         // token认证
         TokenInfoBean tokenInfoBean = JwtUtil.parseToken(token);
 
-        if (tokenInfoBean.checkNull()) {
-            LogUtil.e("token 数据不完整" + tokenInfoBean.toString());
+        if (tokenInfoBean == null || tokenInfoBean.checkNull()) {
+            LogUtil.e("token 数据不完整");
             //  token 异常
             RequestUtil.callBackResult(ResultBean.REQUEST_ERRO_TOKEN_ILLEGAL, response, JsonWorkImpl.newInstance());
             return null;

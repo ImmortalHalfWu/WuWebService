@@ -108,6 +108,12 @@ public class ScanInfoBean extends BaseBean{
         return new ScanInfoBean(id, null, null, null, null, null, null);
     }
 
+    public static ScanInfoBean newInstanceByUserId(
+            Integer userId ) {
+        return new ScanInfoBean(null, userId, null, null, null, null, null);
+    }
+
+
     public boolean checkNull() {
         return FinalUtil.checkNull(scanUrl)
                 || FinalUtil.checkNull(tagName)

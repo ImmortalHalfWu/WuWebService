@@ -111,7 +111,7 @@
 
 
     <!--
-        添加网页监控
+        添加扫描
     -->
     <servlet>
         <servlet-name>AddScanInfo</servlet-name>
@@ -124,7 +124,7 @@
 
 
     <!--
-        移除网页监控
+        移除扫描
     -->
     <servlet>
         <servlet-name>DeleteScan</servlet-name>
@@ -137,7 +137,7 @@
 
 
     <!--
-        修改网页监控信息
+        修改扫描
     -->
     <servlet>
         <servlet-name>ChangeScanInfo</servlet-name>
