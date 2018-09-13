@@ -1,5 +1,6 @@
 package com.wu.immortal.half.servlet;
 
+import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.beans.ResultBean;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
@@ -18,21 +19,9 @@ import java.util.List;
 public class LogoutServlet extends BaseServletServlet {
 
     @Override
-    protected ResultBean.ResultInfo post(TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
+    protected ResultBean.ResultInfo post(@Nullable UserInfoBean userInfoBean, TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
 
         String token = tokenInfoBean.getToken();
-        List<UserInfoBean> userInfoBeans;
-        try {
-            userInfoBeans = DaoAgent.selectSQLForBean(UserInfoBean.newInstanceByToken(token));
-            if (userInfoBeans.size() == 0 || userInfoBeans.size() > 1) {
-                throw new SQLException();
-            }
-        } catch (SQLException e) {
-            LogUtil.e("退出登录失败，未找到账号"+tokenInfoBean, e);
-            return ResultBean.REQUEST_ERRO_SQL;
-        }
-
-        UserInfoBean userInfoBean = userInfoBeans.get(0);
         if (!userInfoBean.getIsLogin()) {
             return ResultBean.createSucInfo("");
         }

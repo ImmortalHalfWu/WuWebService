@@ -21,6 +21,8 @@ public class FinalUtil {
     public static final int REQUEST_ERRO_PASSWORD = 10010;              // 密码错误
     public static final int REQUEST_ERRO_SMS_FAIL = 10011;          //发送短信验证码失败
     public static final int REQUEST_ERRO_SMS_PHONE = 10012;          //手机号格式错误
+    public static final int REQUEST_ERRO_SCAN_ADD_REPEAT = 10013;          //此网址已经在扫描列表啦
+    public static final int REQUEST_ERRO_SCAN_UPADTA_NOT_FOUND = 10014;          //修改扫描信息，但未找到此扫描信息
 
 
 

@@ -25,10 +25,6 @@ public class ScanInfoBean extends BaseBean{
         this.orderType = orderType;
     }
 
-//    public ScanInfoBean(String scanUrl, String tagName, Integer orderType, Integer frequency) {
-//        this(null, null, scanUrl, tagName, orderType, frequency, false);
-//    }
-
     public String getScanUrl() {
         return scanUrl;
     }
@@ -103,8 +99,13 @@ public class ScanInfoBean extends BaseBean{
         return new ScanInfoBean(null, userId, scanUrl, tagName, orderType.getCode(), frequency, canUser);
     }
     public static ScanInfoBean newInstanceByUrl(
-            String scanUrl) {
-        return new ScanInfoBean(null, null, scanUrl, null, null, null, null);
+            String scanUrl, Integer userId ) {
+        return new ScanInfoBean(null, userId, scanUrl, null, null, null, null);
+    }
+
+    public static ScanInfoBean newInstanceById(
+            Integer id ) {
+        return new ScanInfoBean(id, null, null, null, null, null, null);
     }
 
     public boolean checkNull() {

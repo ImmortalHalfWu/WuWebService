@@ -9,6 +9,7 @@ import com.wu.immortal.half.beans.ServletLogBean;
 import com.wu.immortal.half.jsons.JsonWorkImpl;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
 import com.wu.immortal.half.sql.DaoAgent;
+import com.wu.immortal.half.sql.bean.UserInfoBean;
 import com.wu.immortal.half.utils.*;
 
 import javax.servlet.ServletException;
@@ -35,7 +36,7 @@ public abstract class BaseServletServlet extends HttpServlet {
         servletLogBean.setRequestInfo(RequestUtil.getRequestInfo(request).toString());
 
         TokenInfoBean tokenInfoBean = null;
-
+        UserInfoBean userInfoBean = null;
         // token认证
         if (needAuthToken()) {
             tokenInfoBean = JwtUtil.authToken(request, response);
@@ -43,10 +44,10 @@ public abstract class BaseServletServlet extends HttpServlet {
                 LogUtil.e(servletLogBean);
                 return;
             }
-
             try {
                 //  token匹配数据库信息，是否存在
-                if (!DaoAgent.hasTokenInSql(tokenInfoBean.getToken())) {
+                userInfoBean = DaoAgent.hasTokenInSql(tokenInfoBean.getToken());
+                if (userInfoBean == null) {
                     LogUtil.e("Token验证失败，数据库中未找到" + tokenInfoBean.getToken());
                     RequestUtil.callBackResult(ResultBean.REQUEST_ERRO_TOKEN_ILLEGAL, response, JsonWorkImpl.newInstance());
                     return;
@@ -80,7 +81,7 @@ public abstract class BaseServletServlet extends HttpServlet {
         try {
 
             servletLogBean.setRequestBody(requestBody);
-            ResultBean.ResultInfo resultBean = post(tokenInfoBean, requestBody, JsonWorkImpl.newInstance());
+            ResultBean.ResultInfo resultBean = post(userInfoBean, tokenInfoBean, requestBody, JsonWorkImpl.newInstance());
             callBackResult(resultBean, response);
             LogUtil.i(servletLogBean.toString());
 
@@ -101,6 +102,7 @@ public abstract class BaseServletServlet extends HttpServlet {
      */
     protected abstract @Nullable
     ResultBean.ResultInfo post(
+            @Nullable UserInfoBean userInfoBean,
             @Nullable TokenInfoBean tokenInfoBean,
             @NotNull String requestBody,
             @NotNull JsonWorkInterface gson) throws ServletException, IOException;

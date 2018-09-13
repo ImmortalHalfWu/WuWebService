@@ -1,6 +1,7 @@
 package com.wu.immortal.half.servlet;
 
 import com.google.gson.JsonObject;
+import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.beans.ResultBean;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
@@ -19,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
 @WebServlet(name = "SendSMSServlet")
 public class SendSMSServlet extends BaseServletServlet {
     @Override
-    protected ResultBean.ResultInfo post(TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
+    protected ResultBean.ResultInfo post(@Nullable UserInfoBean userInfoBeann, TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
         LogUtil.i("申请发送验证码：" + requestBody);
         UserInfoBean userInfoBean = gson.jsonToBean(requestBody, UserInfoBean.class);
         if (FinalUtil.checkNull(userInfoBean.getPhone())) {

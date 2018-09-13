@@ -1,5 +1,6 @@
 package com.wu.immortal.half.sql;
 
+import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.sql.bean.UserInfoBean;
 import com.wu.immortal.half.sql.bean.UserVipInfoBean;
 import com.wu.immortal.half.sql.bean.enums.VIP_TYPE;
@@ -121,7 +122,28 @@ public class DaoAgent {
      * @param token 指定token
      * @return 数据库中是否存在
      */
-    public static boolean hasTokenInSql(String token) throws SQLException {
-        return DaoManager.instance().selectSQLForBean(UserInfoBean.newInstanceByToken(token)).size() > 0;
+    public static UserInfoBean hasTokenInSql(String token) throws SQLException {
+        List<UserInfoBean> userInfoBeans = DaoManager.instance().selectSQLForBean(UserInfoBean.newInstanceByToken(token));
+        if (userInfoBeans.size() > 0) {
+            return userInfoBeans.get(0);
+        }
+        return null;
+    }
+
+    /**
+     * 获取指定用户的VIP信息
+     * @param userId 用户ID
+     * @return VIP信息
+     * @throws SQLException 查库失败
+     */
+    public static @Nullable UserVipInfoBean findVipInfoByUserId(int userId) throws SQLException {
+
+        List<UserVipInfoBean> userVipInfoBeans = selectSQLForBean(UserVipInfoBean.newInstanceByUserId(userId));
+        if (userVipInfoBeans.size() == 0) {
+            return null;
+        }
+
+        return userVipInfoBeans.get(0);
+
     }
 }

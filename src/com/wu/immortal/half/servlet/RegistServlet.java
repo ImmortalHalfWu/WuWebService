@@ -1,5 +1,6 @@
 package com.wu.immortal.half.servlet;
 
+import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.beans.ResultBean;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
@@ -19,7 +20,7 @@ import java.util.List;
 public class RegistServlet extends BaseServletServlet {
 
     @Override
-    protected ResultBean.ResultInfo post(TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) {
+    protected ResultBean.ResultInfo post(@Nullable UserInfoBean userInfoBeann, TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) {
 
         // 1，验证账号是否重复，2，初始化vip数据+userInfo 返回suc
 

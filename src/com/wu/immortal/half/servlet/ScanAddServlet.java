@@ -1,11 +1,13 @@
 package com.wu.immortal.half.servlet;
 
+import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.beans.ResultBean;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
 import com.wu.immortal.half.servlet.base.BaseServletServlet;
 import com.wu.immortal.half.sql.DaoAgent;
 import com.wu.immortal.half.sql.bean.ScanInfoBean;
+import com.wu.immortal.half.sql.bean.UserInfoBean;
 import com.wu.immortal.half.sql.bean.UserVipInfoBean;
 import com.wu.immortal.half.sql.bean.enums.VIP_TYPE;
 import com.wu.immortal.half.utils.LogUtil;
@@ -24,13 +26,16 @@ import static com.wu.immortal.half.utils.FinalUtil.SCAN_FREQUENCY_SENIOR;
 import static com.wu.immortal.half.utils.FinalUtil.SCAN_FREQUENCY_SUPER;
 
 
+/**
+ *  相同网址重复添加， 应该屏蔽
+ */
 @WebServlet(name = "ScanAddServlet")
 public class ScanAddServlet extends BaseServletServlet {
 
     private static final String TAG = "添加扫描";
 
     @Override
-    protected ResultBean.ResultInfo post(TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
+    protected ResultBean.ResultInfo post(@Nullable UserInfoBean userInfoBean, TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
 
         LogUtil.i(TAG + requestBody);
 
@@ -40,32 +45,48 @@ public class ScanAddServlet extends BaseServletServlet {
             return ResultBean.REQUEST_ERRO_JSON;
         }
 
-        UserVipInfoBean userVipInfoBean = UserVipInfoBean.newInstanceByUserId(tokenInfoBean.getUserId());
+        // 同一网址只能添加一个
         try {
-            List<UserVipInfoBean> userVipInfoBeans = DaoAgent.selectSQLForBean(userVipInfoBean);
-            if (userVipInfoBeans.size() == 0) {
-                LogUtil.e(TAG + "失败， 未找到用户的VIP数据" + tokenInfoBean.toString());
-                throw new SQLException();
+            List<ScanInfoBean> scanInfoBeansByUrl =
+                    DaoAgent.selectSQLForBean(
+                            ScanInfoBean.newInstanceByUrl(scanInfoBean.getScanUrl(), tokenInfoBean.getUserId()
+                            )
+                    );
+            if (scanInfoBeansByUrl.size() != 0) {
+                LogUtil.i(TAG + "重复添加扫描");
+                return ResultBean.REQUEST_ERRO_SCAN_ADD_REPEAT;
             }
-            userVipInfoBean = userVipInfoBeans.get(0);
         } catch (SQLException e) {
-            LogUtil.e(e);
-            return ResultBean.REQUEST_ERRO_TOKEN_ILLEGAL;
+            e.printStackTrace();
+            LogUtil.e(TAG + "", e);
+        }
+
+
+        // 匹配权限， 是否是合法扫描
+        UserVipInfoBean userVipInfoBean;
+        try {
+            userVipInfoBean = DaoAgent.findVipInfoByUserId(tokenInfoBean.getUserId());
+            if (userVipInfoBean == null) {
+                return ResultBean.REQUEST_ERRO_JSON;
+            }
+        } catch (SQLException e) {
+            LogUtil.e("查找用户VIP数据失败", e);
+            return ResultBean.REQUEST_ERRO_SQL;
         }
 
         LogUtil.i(TAG + "开始匹配用户信息与扫描信息是否匹配");
 
         VIP_TYPE vipTypeEnum = userVipInfoBean.getVipTypeEnum();
+        boolean isCanUser = (vipTypeEnum == VIP_TYPE_ORDINARY && scanInfoBean.getFrequency() == SCAN_FREQUENCY_ORDINARY
+                || vipTypeEnum == VIP_TYPE_SENIOR && scanInfoBean.getFrequency() == SCAN_FREQUENCY_SENIOR
+                || vipTypeEnum == VIP_TYPE_SUPER && scanInfoBean.getFrequency() == SCAN_FREQUENCY_SUPER);
+
+        LogUtil.i(TAG + "匹配结果，" + isCanUser);
 
         // 是否可用
-        scanInfoBean.setCanUser(!(
-                vipTypeEnum == VIP_TYPE_ORDINARY && scanInfoBean.getFrequency() != SCAN_FREQUENCY_ORDINARY
-                        || vipTypeEnum == VIP_TYPE_SENIOR && scanInfoBean.getFrequency() != SCAN_FREQUENCY_SENIOR
-                        || vipTypeEnum == VIP_TYPE_SUPER && scanInfoBean.getFrequency() != SCAN_FREQUENCY_SUPER
-        ));
+        scanInfoBean.setCanUser(isCanUser);
 
-
-        LogUtil.i(TAG + "匹配成功, 插入数据库");
+        LogUtil.i(TAG + "插入数据库");
 
         scanInfoBean.setUserId(tokenInfoBean.getUserId());
 

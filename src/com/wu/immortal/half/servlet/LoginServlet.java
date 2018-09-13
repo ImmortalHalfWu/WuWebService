@@ -1,6 +1,7 @@
 package com.wu.immortal.half.servlet;
 
 import com.google.gson.JsonObject;
+import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.beans.ResultBean;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
@@ -21,7 +22,7 @@ import java.util.List;
 @WebServlet(name = "LoginServlet")
 public class LoginServlet extends BaseServletServlet {
     @Override
-    protected ResultBean.ResultInfo post(TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
+    protected ResultBean.ResultInfo post(@Nullable UserInfoBean userInfoBeann, TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
 
         // 1, 账号密码是否正确，2,更新数据库状态，3，返回用户数据+vip数据
         UserInfoBean userInfoBean = gson.jsonToBean(requestBody, UserInfoBean.class);

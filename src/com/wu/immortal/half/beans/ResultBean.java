@@ -18,8 +18,8 @@ public class ResultBean {
     public static final ResultInfo REQUEST_ERRO_PASSWORD = new ResultInfo(FinalUtil.REQUEST_ERRO_PASSWORD, "用户名或密码错误");
     public static final ResultInfo REQUEST_ERRO_SMS_FAIL = new ResultInfo(FinalUtil.REQUEST_ERRO_SMS_FAIL, "发送短信验证码失败");
     public static final ResultInfo REQUEST_ERRO_SMS_PHONE = new ResultInfo(FinalUtil.REQUEST_ERRO_SMS_PHONE, "手机号格式错误");
-
-
+    public static final ResultInfo REQUEST_ERRO_SCAN_ADD_REPEAT = new ResultInfo(FinalUtil.REQUEST_ERRO_SCAN_ADD_REPEAT, "此网址已经在扫描列表啦");
+    public static final ResultInfo REQUEST_ERRO_SCAN_UPADTA_NOT_FOUND = new ResultInfo(FinalUtil.REQUEST_ERRO_SCAN_UPADTA_NOT_FOUND, "未找到此扫描信息");
 
 
 
