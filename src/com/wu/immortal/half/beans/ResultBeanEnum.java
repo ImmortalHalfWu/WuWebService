@@ -5,12 +5,6 @@ import com.wu.immortal.half.utils.FinalUtil;
 
 public enum ResultBeanEnum {
 
-//    public static final int REQUEST_SUCCESS = 10000;                // 请求成功
-//    public static final int REQUEST_ERRO_TOKEN_ILLEGAL = 10002;     // token为null或非法
-//    public static final int REQUEST_ERRO_TOKEN_END_TIME = 10001;    // token 超时
-//    public static final int REQUEST_ERRO_NULL_BODY = 10003;         // body参数null
-//    public static final int REQUEST_ERRO_SERVER = 10004;            // 服务器异常，各子类查找时异常
-
     REQUEST_SUCCESS(FinalUtil.REQUEST_SUCCESS, "success"),
     REQUEST_ERRO_TOKEN_END_TIME(FinalUtil.REQUEST_ERRO_TOKEN_END_TIME, "身份过期"),
     REQUEST_ERRO_NULL_BODY(FinalUtil.REQUEST_ERRO_NULL_BODY, "请求参数异常"),

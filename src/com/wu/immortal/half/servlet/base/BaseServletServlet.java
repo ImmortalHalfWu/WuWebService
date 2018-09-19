@@ -71,7 +71,7 @@ public abstract class BaseServletServlet extends HttpServlet {
         // 获取json数据
         String requestBody = RequestUtil.getRequestBody(request).trim();
 
-        if (FinalUtil.checkNull(requestBody)) {
+        if (needAuthRequestBody() && FinalUtil.checkNull(requestBody)) {
             // 请求体空异常
             callBackResult(ResultBean.REQUEST_ERRO_NULL_BODY, response);
             LogUtil.e(servletLogBean.toString());
@@ -111,6 +111,13 @@ public abstract class BaseServletServlet extends HttpServlet {
      * @return 是否需要认证token有效性
      */
     protected boolean needAuthToken() {
+        return true;
+    }
+
+    /**
+     * @return 是否需要验证请求体
+     */
+    protected boolean needAuthRequestBody() {
         return true;
     }
 

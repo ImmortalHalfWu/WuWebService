@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class DaoUtil {
 
-    private static Map<String, Object> object2Map(@NotNull Object object) {
+    public static Map<String, Object> object2Map(@NotNull Object object) {
 
         PropertyFilter propertyFilter = (o, s, o1) -> o1 != null && !o1.getClass().isEnum();
         String objectJson = JSON.toJSONString(object, propertyFilter);
