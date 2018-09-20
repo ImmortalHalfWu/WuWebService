@@ -148,4 +148,53 @@
         <url-pattern>/changeScanInfo</url-pattern>
     </servlet-mapping>
 
+
+    <!--
+        添加一条扫描记录
+    -->
+    <servlet>
+        <servlet-name>AddScanRecord</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.ScanAddRecordServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddScanRecord</servlet-name>
+        <url-pattern>/addScanRecord</url-pattern>
+    </servlet-mapping>
+
+
+    <!--
+        支付回执
+    -->
+    <servlet>
+        <servlet-name>PayPushServlet</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.PayPushServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PayPushServlet</servlet-name>
+        <url-pattern>/payPush</url-pattern>
+    </servlet-mapping>
+
+
+
+    <!--<welcome-file-list>-->
+        <!--<welcome-file>index.html</welcome-file>-->
+        <!--<welcome-file>index.htm</welcome-file>-->
+        <!--<welcome-file>index.jsp</welcome-file>-->
+    <!--</welcome-file-list>-->
+    <!--<login-config>-->
+        <!--&lt;!&ndash; Authorization setting for SSL &ndash;&gt;-->
+        <!--<auth-method>CLIENT-CERT</auth-method>-->
+        <!--<realm-name>Client Cert Users-only Area</realm-name>-->
+    <!--</login-config>-->
+    <!--<security-constraint>-->
+        <!--&lt;!&ndash; Authorization setting for SSL &ndash;&gt;-->
+        <!--<web-resource-collection>-->
+            <!--<web-resource-name>SSL</web-resource-name>-->
+            <!--<url-pattern>/*</url-pattern>-->
+        <!--</web-resource-collection>-->
+        <!--<user-data-constraint>-->
+            <!--<transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
+        <!--</user-data-constraint>-->
+    <!--</security-constraint>-->
+
 </web-app>

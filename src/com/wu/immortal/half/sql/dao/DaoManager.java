@@ -3,6 +3,7 @@ package com.wu.immortal.half.sql.dao;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.wu.immortal.half.configs.ApplicationConfig;
 import com.wu.immortal.half.sql.bean.*;
 import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.sql.dao.impls.SQLDaoImpl;
@@ -35,7 +36,7 @@ public class DaoManager {
         LogUtil.i("DaoManager初始化完成");
     }
 
-    public static void init() throws SQLException {
+    public static void init() {
         if (daoManager == null) {
             synchronized (DaoManager.class) {
                 daoManager = new DaoManager();
@@ -110,9 +111,13 @@ public class DaoManager {
     private boolean connectSQL() {
         try {
             if (connection == null || connection.isClosed()) {
-                String sqlUrl = "jdbc:mysql://localhost:3306/zhitou?useSSL=false&serverTimezone=GMT%2B8";
-                String sqlUser = "root";
-                String sqlPassWord = "mysql2b";
+                ApplicationConfig applicationConfig = ApplicationConfig.instance();
+                String sqlUrl = applicationConfig.getSqlUrl();
+                String sqlUser = applicationConfig.getSqlUser();
+                String sqlPassWord = applicationConfig.getSqlPassWord();
+//                String sqlUrl = "jdbc:mysql://localhost:3306/zhitou?useSSL=false&serverTimezone=GMT%2B8&autoReconnect=true";
+//                String sqlUser = "root";
+//                String sqlPassWord = "mysql2b";
                 LogUtil.i("尝试连接数据库");
                 connection = DriverManager.getConnection(sqlUrl, sqlUser, sqlPassWord);
                 LogUtil.i("连接数据库成功");

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.beans.ResultBean;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
+import com.wu.immortal.half.configs.ApplicationConfig;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
 import com.wu.immortal.half.servlet.base.BaseServletServlet;
 import com.wu.immortal.half.sql.DaoAgent;
@@ -107,7 +108,7 @@ public class LoginServlet extends BaseServletServlet {
         jsonObject.add("vipInfo", gson.toJsonElement(userVipInfoBean));
         String loginResultJson = jsonObject.toString();
         LogUtil.i("登录成功：" + loginResultJson);
-
+        ApplicationConfig.instance().setDebug(false);
         return ResultBean.createSucInfo(jsonObject);
     }
 

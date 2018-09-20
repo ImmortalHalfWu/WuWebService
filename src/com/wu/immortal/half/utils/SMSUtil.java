@@ -6,25 +6,44 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
+import com.wu.immortal.half.configs.ApplicationConfig;
 
 public class SMSUtil {
 
+    private static SMSUtil smsUtil;
 
-    private static final String APPCODE = "APPCODE 12b9b1bbd89d452cb59dc78684347d56";
-    private static final String URL_HOST = "https://fesms.market.alicloudapi.com";
-    private static final String URL_PATH = "/sms/";
+    private SMSUtil() {
+        LogUtil.i("SMSUtil初始化成功");
+    }
+
+
+    public static void init() {
+        if (smsUtil == null) {
+            synchronized (SMSUtil.class) {
+                smsUtil = new SMSUtil();
+            }
+        }
+    }
+
+    public static SMSUtil getInstance() {
+        return smsUtil;
+    }
 
     /**
      * @param code  要发送的验证码
      * @return 发送是否成功
      */
-    public static boolean sendSMS(int code, String phone) {
+    public boolean sendSMS(int code, String phone) {
         LogUtil.i("开始发送短信： phone = " + phone + "__验证码 = " + code);
         GetRequest getRequest;
         try {
-
-            getRequest = Unirest.get(URL_HOST + URL_PATH + "?code=" + code + "&phone=" + phone + "&sign=1" + "&skin=20");
-            getRequest.header("authorization", APPCODE);
+            ApplicationConfig applicationConfig = ApplicationConfig.instance();
+            // 配置文件读取
+            String smsAppCode = applicationConfig.getSMSAppCode();
+            String smsUrlHost = applicationConfig.getSMSUrlHost();
+            String smsUrlPath = applicationConfig.getSMSUrlPath();
+            getRequest = Unirest.get(smsUrlHost + smsUrlPath + "?code=" + code + "&phone=" + phone + "&sign=1" + "&skin=20");
+            getRequest.header("authorization", smsAppCode);
             LogUtil.i("发送短信： 请求体 = " + getRequest.getUrl());
 
             HttpResponse<String> response = getRequest.asString();
