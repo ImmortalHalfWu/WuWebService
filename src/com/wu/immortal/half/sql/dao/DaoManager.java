@@ -151,6 +151,12 @@ public class DaoManager {
         if (aClass.equals(TestUserBean.class)) {
             return "login_user";
         }
+        if (aClass.equals(PayQRcodeBean.class)) {
+            return "qrcode";
+        }
+        if (aClass.equals(PayInfoBean.class)) {
+            return "pay_info";
+        }
 
         return null;
 

@@ -1,6 +1,5 @@
 package com.wu.immortal.half.utils;
 
-import com.google.gson.JsonObject;
 import com.wu.immortal.half.configs.ApplicationConfig;
 import com.youzan.open.sdk.client.auth.Token;
 import com.youzan.open.sdk.client.core.DefaultYZClient;
@@ -73,35 +72,32 @@ public class PayUtil {
 
     private void initClient() {
         Token token = new Token(ApplicationConfig.instance().getPayToken());
-        yzClient = new DefaultYZClient();
+        if (yzClient == null) {
+            yzClient = new DefaultYZClient();
+        }
         yzClient.setAuth(token);
     }
 
-    private void payTest() {
-        // todo 支付接口封装  + 与刷新token并发同步的问题
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("lab1", "11");
-        jsonObject.addProperty("lab2", "22");
-
+    public synchronized YouzanPayQrcodeCreateResult createPayQR(String qrName, String money) {
+        // todo 支付接口封装
         YouzanPayQrcodeCreate youzanPayQrcodeCreate = new YouzanPayQrcodeCreate();
         YouzanPayQrcodeCreateParams youzanPayQrcodeCreateParams = new YouzanPayQrcodeCreateParams();
-        youzanPayQrcodeCreateParams.setLabelIds("[7777777,666,55555]");
-        youzanPayQrcodeCreateParams.setQrName("测试生成收款二维码");
-        youzanPayQrcodeCreateParams.setQrPrice("1");
-        youzanPayQrcodeCreateParams.setQrSource("this is QR source");
+        youzanPayQrcodeCreateParams.setQrName(qrName);
+        youzanPayQrcodeCreateParams.setQrPrice(money);
         //二维码类型. QR_TYPE_FIXED_BY_PERSON ：无金额二维码，扫码后用户需自己输入金额； QR_TYPE_NOLIMIT ： 确定金额二维码，可以重复支付; QR_TYPE_DYNAMIC：确定金额二维码，只能被支付一次
         youzanPayQrcodeCreateParams.setQrType("QR_TYPE_DYNAMIC");
 
         youzanPayQrcodeCreate.setAPIParams(youzanPayQrcodeCreateParams);
 
         YouzanPayQrcodeCreateResult result = yzClient.invoke(youzanPayQrcodeCreate);
-        System.out.println(JsonUtils.toJson(result));
+        LogUtil.i("生成支付二维码成功。" + "qrName = " + qrName + "  money = " + money + "  二维码数据 = " + JsonUtils.toJson(result));
+        return result;
     }
 
     /**
      * 刷新token， 放出给外部使用
      */
-    public void refreshToken() {
+    public synchronized void refreshToken() {
         initToken();
         initClient();
         LogUtil.i("刷新payToken成功");
