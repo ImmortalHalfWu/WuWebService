@@ -60,18 +60,6 @@
     </servlet-mapping>
 
     <!--
-        发送短信验证码
-    -->
-    <servlet>
-        <servlet-name>SendSms</servlet-name>
-        <servlet-class>com.wu.immortal.half.servlet.SendSMSServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SendSms</servlet-name>
-        <url-pattern>/sendSMS</url-pattern>
-    </servlet-mapping>
-
-    <!--
         修改密码
     -->
     <servlet>
@@ -162,6 +150,13 @@
     </servlet-mapping>
 
 
+
+
+
+
+
+
+    <!--=======================================支付回执+短信接口======================================================-->
     <!--
         支付回执
     -->
@@ -172,6 +167,19 @@
     <servlet-mapping>
         <servlet-name>PayPushServlet</servlet-name>
         <url-pattern>/payPush</url-pattern>
+    </servlet-mapping>
+
+
+    <!--
+        发送短信验证码
+    -->
+    <servlet>
+        <servlet-name>SendSms</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.SendSMSServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SendSms</servlet-name>
+        <url-pattern>/sendSMS</url-pattern>
     </servlet-mapping>
 
 

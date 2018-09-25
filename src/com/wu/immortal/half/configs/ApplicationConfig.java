@@ -65,6 +65,10 @@ public class ApplicationConfig {
     private String sqlUser;
     private String sqlPassWord;
 
+    private long workerSqlRefreshDelay;
+    private long workerRefreshPayTokenDelay;
+
+
     public boolean isDebug() {
         return debug;
     }
@@ -159,6 +163,22 @@ public class ApplicationConfig {
 
     public void setSqlPassWord(String sqlPassWord) {
         this.sqlPassWord = sqlPassWord;
+    }
+
+    public long getWorkerSqlRefreshDelay() {
+        return workerSqlRefreshDelay;
+    }
+
+    public void setWorkerSqlRefreshDelay(long workerSqlRefreshDelay) {
+        this.workerSqlRefreshDelay = workerSqlRefreshDelay;
+    }
+
+    public long getWorkerRefreshPayTokenDelay() {
+        return workerRefreshPayTokenDelay;
+    }
+
+    public void setWorkerRefreshPayTokenDelay(long workerRefreshPayTokenDelay) {
+        this.workerRefreshPayTokenDelay = workerRefreshPayTokenDelay;
     }
 
     @Override

@@ -18,17 +18,12 @@ import com.youzan.open.sdk.util.json.JsonUtils;
 public class PayUtil {
 
     private static PayUtil payUtil;
-//    private String CLIENT_ID = "afcd2eb5b88fbdbd90";
-//    private String CLIENT_SECRET = "6f2d78752dd8aaded87ae9e3b027c058";
-//    private long KDT_ID = 41461397;
-//    // 0917-0924
-//    private String payToken = "9de830f1a71835c4950871a84e0c9d20";
-//    private long endTime;
     private YZClient yzClient;
 
     private PayUtil() {
         initToken();
         initClient();
+        LogUtil.i("PayUtil初始化成功");
     }
 
     public static void init() {
@@ -45,6 +40,7 @@ public class PayUtil {
     }
 
     private void initToken() {
+        // todo token刷新问题
         ApplicationConfig applicationConfig = ApplicationConfig.instance();
         // 若找到token， 并有效期内，则直接返回
         if (applicationConfig.getPayToken() != null
@@ -76,28 +72,39 @@ public class PayUtil {
     }
 
     private void initClient() {
-        yzClient = new DefaultYZClient(new Token(ApplicationConfig.instance().getPayToken()));
-        LogUtil.i("PayUtil初始化成功");
+        Token token = new Token(ApplicationConfig.instance().getPayToken());
+        yzClient = new DefaultYZClient();
+        yzClient.setAuth(token);
     }
 
     private void payTest() {
-        // todo 支付接口封装
+        // todo 支付接口封装  + 与刷新token并发同步的问题
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("lab1", "11");
         jsonObject.addProperty("lab2", "22");
 
         YouzanPayQrcodeCreate youzanPayQrcodeCreate = new YouzanPayQrcodeCreate();
         YouzanPayQrcodeCreateParams youzanPayQrcodeCreateParams = new YouzanPayQrcodeCreateParams();
-        youzanPayQrcodeCreateParams.setLabelIds("[1,2,3]");
+        youzanPayQrcodeCreateParams.setLabelIds("[7777777,666,55555]");
         youzanPayQrcodeCreateParams.setQrName("测试生成收款二维码");
         youzanPayQrcodeCreateParams.setQrPrice("1");
         youzanPayQrcodeCreateParams.setQrSource("this is QR source");
+        //二维码类型. QR_TYPE_FIXED_BY_PERSON ：无金额二维码，扫码后用户需自己输入金额； QR_TYPE_NOLIMIT ： 确定金额二维码，可以重复支付; QR_TYPE_DYNAMIC：确定金额二维码，只能被支付一次
         youzanPayQrcodeCreateParams.setQrType("QR_TYPE_DYNAMIC");
 
         youzanPayQrcodeCreate.setAPIParams(youzanPayQrcodeCreateParams);
 
         YouzanPayQrcodeCreateResult result = yzClient.invoke(youzanPayQrcodeCreate);
         System.out.println(JsonUtils.toJson(result));
+    }
+
+    /**
+     * 刷新token， 放出给外部使用
+     */
+    public void refreshToken() {
+        initToken();
+        initClient();
+        LogUtil.i("刷新payToken成功");
     }
 
 }

@@ -7,6 +7,7 @@ import com.wu.immortal.half.sql.dao.DaoManager;
 import com.wu.immortal.half.utils.LogUtil;
 import com.wu.immortal.half.utils.PayUtil;
 import com.wu.immortal.half.utils.SMSUtil;
+import com.wu.immortal.half.works.WorkPoolUtil;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -23,6 +24,7 @@ public class StartInit implements ServletContextListener {
             SMSUtil.init();
             JsonWorkImpl.newInstance();
             DaoAgent.init();
+            WorkPoolUtil.init();
         } catch (Exception e) {
             e.printStackTrace();
             LogUtil.e("初始化失败", e);
@@ -33,6 +35,7 @@ public class StartInit implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
+        WorkPoolUtil.init().release();
         DaoManager.instance().release();
         LogUtil.i("服务器停止");
     }
