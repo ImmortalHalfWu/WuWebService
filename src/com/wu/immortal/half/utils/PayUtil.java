@@ -50,6 +50,7 @@ public class PayUtil {
 
         LogUtil.i("PayToken失效， 重新申请。");
 
+        long nowTimeToLong = DataUtil.getNowTimeToLong();
         // 刷新token
         OAuth authorizationCode = OAuthFactory.create(
                 OAuthType.SELF,
@@ -64,7 +65,7 @@ public class PayUtil {
 
         LogUtil.i("PayToken申请成功：" + token);
         applicationConfig.setPayToken(token.getAccessToken());
-        applicationConfig.setPayTokenEndTime(token.getExpiresIn() * 1000 + DataUtil.getNowTimeToLong());
+        applicationConfig.setPayTokenEndTime(token.getExpiresIn() * 1000 + nowTimeToLong);
         LogUtil.i("更新至配置文件" );
         applicationConfig.uploadToFile();
 
