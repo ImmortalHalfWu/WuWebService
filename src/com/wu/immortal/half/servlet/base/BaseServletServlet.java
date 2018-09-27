@@ -31,7 +31,8 @@ public abstract class BaseServletServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        // 日志数据
+        LogUtil.i("++++++++++++++++++++++++++++请求接口"+getClass().getSimpleName()+"+++++++++++++++++++++++++++++++++++");
+      // 日志数据
         ServletLogBean servletLogBean = new ServletLogBean();
         servletLogBean.setRequestInfo(RequestUtil.getRequestInfo(request).toString());
 
@@ -93,7 +94,7 @@ public abstract class BaseServletServlet extends HttpServlet {
             // 子类异常，统一回复
             callBackResult(ResultBean.REQUEST_ERRO_SERVER, response);
         }
-
+        LogUtil.i("-----------------------------"+getClass().getSimpleName()+"----------------------------------");
     }
 
     /**

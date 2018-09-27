@@ -43,7 +43,6 @@ public class PayQRcodeBean extends BaseBean {
     }
 
     private static PayQRcodeBean createPayQRcodeBean(Integer userId, PayCodeVipTypeInfoBean.QRCodeVipTypeInfo vipTypeInfo) {
-        // todo createTime 字段， 尽量靠近二维码创建时间
         PayQRcodeBean payQRcodeBean = new PayQRcodeBean(null, userId);
         payQRcodeBean.setAllMoney(vipTypeInfo.getAllMoney());
         payQRcodeBean.setMonthMoney(vipTypeInfo.getMonthMoney());
@@ -58,6 +57,21 @@ public class PayQRcodeBean extends BaseBean {
 
     public PayQRcodeBean(Integer id, Integer userId) {
         super(id, userId);
+    }
+
+    public PayQRcodeBean(Integer id, Integer userId, String qrId, String qrImg, String qrName, Integer vipType, Integer timeNum, String timeUnit, String timeLong, Integer allMoney, Integer monthMoney, String createTime, Integer saveMoney) {
+        super(id, userId);
+        this.qrId = qrId;
+        this.qrImg = qrImg;
+        this.qrName = qrName;
+        this.vipType = vipType;
+        this.timeNum = timeNum;
+        this.timeUnit = timeUnit;
+        this.timeLong = timeLong;
+        this.allMoney = allMoney;
+        this.monthMoney = monthMoney;
+        this.createTime = createTime;
+        this.saveMoney = saveMoney;
     }
 
     public String getQrId() {
@@ -144,7 +158,14 @@ public class PayQRcodeBean extends BaseBean {
 
     public VIP_TYPE getEnumVipType() {
         // 超级会员年11，6月12,1月13，高级会员，年21, 6月22，1月23
-        return enumVipType == null ? enumVipType = VIP_TYPE.valueOf(vipType / 10) : enumVipType;
+        if(vipType == null) {
+            return null;
+        }
+        if (vipType / 10 == 1) {
+            return VIP_TYPE.VIP_TYPE_SUPER;
+        } else {
+            return VIP_TYPE.VIP_TYPE_SENIOR;
+        }
     }
 
     public Integer getSaveMoney() {

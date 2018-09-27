@@ -14,15 +14,23 @@ public class UserVipInfoBean extends BaseBean{
     private String endTimeFormat;
 
     public UserVipInfoBean(Integer id, Integer userId, String startTime, String endTime, Integer vipType) {
+        this(
+                id,
+                userId,
+                startTime,
+                endTime,
+                vipType,
+                startTime != null ? DataUtil.timeFormatYMDToString(Long.valueOf(startTime)) : null,
+                endTime != null ? DataUtil.timeFormatYMDToString(Long.valueOf(endTime)) : null
+        );
+    }
+
+    public UserVipInfoBean(Integer id, Integer userId, String startTime, String endTime, Integer vipType, String startTimeFormat, String endTimeFormat) {
         super(id, userId);
         this.startTime = startTime;
         this.endTime = endTime;
-        if (startTime != null) {
-            startTimeFormat = DataUtil.timeFormatYMDToString(Long.valueOf(startTime));
-        }
-        if (endTime != null) {
-            endTimeFormat = DataUtil.timeFormatYMDToString(Long.valueOf(endTime));
-        }
+        this.startTimeFormat = startTimeFormat;
+        this.endTimeFormat = endTimeFormat;
         if (vipType != null) {
             this.vipTypeEnum = VIP_TYPE.valueOf(vipType);
             this.vipType = vipTypeEnum.getCode();

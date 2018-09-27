@@ -111,7 +111,7 @@ public class DaoAgent {
 
         boolean updataSuc = DaoAgent.updataBeanForSQL(userInfoBean, newUserInfoBean);
 
-        Integer userId = userInfoBean.getId();
+        Integer userId = newUserInfoBean.getId();
         // todo 初始化支付二维码 待测试
         PayUtil payUtil = PayUtil.getInstance();
         PayQRcodeBean[] qRcodeBeans = new PayQRcodeBean[]{

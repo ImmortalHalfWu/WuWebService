@@ -39,7 +39,7 @@ public class PayUtil {
     }
 
     private void initToken() {
-        // todo token刷新问题
+        //  token刷新问题
         ApplicationConfig applicationConfig = ApplicationConfig.instance();
         // 若找到token， 并有效期内，则直接返回
         if (applicationConfig.getPayToken() != null
@@ -79,8 +79,13 @@ public class PayUtil {
         yzClient.setAuth(token);
     }
 
+    /**
+     * 仅生成支付二维码。
+     * @param qrName 支付时显示的收款理由
+     * @param money 支付金额， 分
+     * @return 支付二维码数据
+     */
     public synchronized YouzanPayQrcodeCreateResult createPayQR(String qrName, String money) {
-        // todo 支付接口封装
         YouzanPayQrcodeCreate youzanPayQrcodeCreate = new YouzanPayQrcodeCreate();
         YouzanPayQrcodeCreateParams youzanPayQrcodeCreateParams = new YouzanPayQrcodeCreateParams();
         youzanPayQrcodeCreateParams.setQrName(qrName);

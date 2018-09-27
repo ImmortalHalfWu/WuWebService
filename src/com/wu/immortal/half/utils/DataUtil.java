@@ -75,4 +75,16 @@ public class DataUtil {
         }
         return calendar.getTime().getTime();
     }
+
+    public static long timeLongToDay(long timeLong) {
+        long i = timeLong / 1000 / 60 / 60 / 24;
+        return i < 0 ? 0 : i;
+    }
+
+    public static long timeDayToLong(long timeDay) {
+        long i = timeDay * 1000 * 60 * 60 * 24;
+        return i < 0 ? 0 : i;
+    }
+
+
 }

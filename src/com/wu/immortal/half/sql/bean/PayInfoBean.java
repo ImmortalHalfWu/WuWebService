@@ -5,7 +5,7 @@ public class PayInfoBean extends BaseBean{
     private Integer qrId;
     private Integer money; // 支付的金额， 单位分
     private String timeFormat;  // 支付时间
-    private String tomeToLong; // 支付时间转long
+    private String timeToLong; // 支付时间转long
     private String allData;   // 有赞推送的所有数据
 
     public PayInfoBean(Integer id, Integer userId) {
@@ -36,12 +36,12 @@ public class PayInfoBean extends BaseBean{
         this.timeFormat = timeFormat;
     }
 
-    public String getTomeToLong() {
-        return tomeToLong;
+    public String getTimeToLong() {
+        return timeToLong;
     }
 
-    public void setTomeToLong(String tomeToLong) {
-        this.tomeToLong = tomeToLong;
+    public void setTimeToLong(String timeToLong) {
+        this.timeToLong = timeToLong;
     }
 
     public String getAllData() {
@@ -58,7 +58,7 @@ public class PayInfoBean extends BaseBean{
                 "qrId=" + qrId +
                 ", money=" + money +
                 ", timeFormat='" + timeFormat + '\'' +
-                ", tomeToLong='" + tomeToLong + '\'' +
+                ", timeToLong='" + timeToLong + '\'' +
                 ", allData='" + allData + '\'' +
                 '}';
     }

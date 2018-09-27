@@ -1,28 +1,175 @@
 package com.wu.immortal.half.servlet;
 
+import com.wu.immortal.half.beans.PayPushBean;
+import com.wu.immortal.half.beans.PayPushMsgBean;
 import com.wu.immortal.half.beans.ResultBean;
 import com.wu.immortal.half.beans.ServletBeans.TokenInfoBean;
-import com.wu.immortal.half.jsons.JsonWorkImpl;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
 import com.wu.immortal.half.servlet.base.BaseServletServlet;
-import com.wu.immortal.half.sql.bean.UserInfoBean;
+import com.wu.immortal.half.sql.DaoAgent;
+import com.wu.immortal.half.sql.bean.*;
+import com.wu.immortal.half.sql.bean.enums.VIP_TYPE;
+import com.wu.immortal.half.utils.DataUtil;
 import com.wu.immortal.half.utils.LogUtil;
-import com.wu.immortal.half.utils.RequestUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet(name = "PayPushServlet")
 public class PayPushServlet extends BaseServletServlet {
     @Override
     protected ResultBean.ResultInfo post(UserInfoBean userInfoBean, TokenInfoBean tokenInfoBean, String requestBody, JsonWorkInterface gson) throws ServletException, IOException {
-        return ResultBean.createSucInfo("success");
 
-        // todo 收到推送后的处理逻辑， 要再整理
+        /*
+        收到推送后的处理逻辑
+        1, 查找支付二维码数据库，通过qrid找出对应的PayQRcodeBean
+        2, 支付二维码对应的userId，查出用户vip信息
+        3，判断Vip信息
+            if（当前会员 > 购买会员）{   比如当前超级，购买高级，则将付款金额转为超级会员时间     }
+            if (当前会员 < 购买会员 && 当前会员 != 普通会员) {  比如当前高级，购买超级，则将高级会员剩余时间转为金额， 再加上购买的时间， 升级为高级会员}
+            if (当前会员 == 购买会员) {  直接续费 }
+        4, 更新会员数据
+        5，将此次支付数据存入数据库
+         */
+        PayPushMsgBean payPushMsgBean = gson.jsonToBean(
+                URLDecoder.decode(
+                        gson.jsonToBean(
+                                requestBody,
+                                PayPushBean.class
+                        ).getMsg(),
+                        "UTF-8"),
+                PayPushMsgBean.class);
+        PayPushMsgBean.QrInfoBean qr_info = payPushMsgBean.getQr_info();
+        PayQRcodeBean payQRcodeBean = new PayQRcodeBean(null, null);
+        payQRcodeBean.setQrId(String.valueOf(qr_info.getQr_id()));
+
+        // 查找数据库中，此次支付对应的二维码及会员信息
+        List<PayQRcodeBean> payQRcodeBeans = null;
+        try {
+            payQRcodeBeans = DaoAgent.selectSQLForBean(payQRcodeBean);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if (payQRcodeBeans == null || payQRcodeBeans.size() == 0) {
+            LogUtil.e("支付回执： 未在数据库中找到此二维码id = " + payQRcodeBean.getQrId());
+            return ResultBean.createSucInfo("success");
+        }
+
+        // 得到二维码对应的会员服务
+        PayQRcodeBean payQRcodeBeanBySql = payQRcodeBeans.get(0);
+        LogUtil.i("支付回执： 此次支付二维码数据 = " + payQRcodeBeanBySql);
+
+        // 获取用户的vip信息
+        List<UserVipInfoBean> userVipInfoBeans = null;
+        try {
+            userVipInfoBeans = DaoAgent.selectSQLForBean(UserVipInfoBean.newInstanceByUserId(payQRcodeBeanBySql.getUserId()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (userVipInfoBeans == null || userVipInfoBeans.size() == 0) {
+            LogUtil.e("支付回执： 未在数据库中找到此支付用户的Vip信息 userId= " + payQRcodeBeanBySql.getUserId());
+            return ResultBean.createSucInfo("success");
+        }
+
+        // 获取到支付用户的会员信息
+        UserVipInfoBean currentUserVipInfoBean = userVipInfoBeans.get(0);
+
+        // 比较当前用户会员信息与购买的会员信息
+        VIP_TYPE currentVipTypeEnum = currentUserVipInfoBean.getVipTypeEnum();
+        VIP_TYPE payVipTypeEnum = payQRcodeBeanBySql.getEnumVipType();
+
+        long newVipStartTime = Long.parseLong(currentUserVipInfoBean.getStartTime());
+        long newVipEndTime;
+        VIP_TYPE newVipTypeForSql;
+
+
+        if (currentVipTypeEnum == VIP_TYPE.VIP_TYPE_SUPER && payVipTypeEnum == VIP_TYPE.VIP_TYPE_SENIOR) {
+            newVipTypeForSql = VIP_TYPE.VIP_TYPE_SUPER;
+            // 降级？ 支付金额折为当前会员时间，  超级 -》 高级
+            // 超级会员一天的价格
+            Integer superVipdayMoney = PayCodeVipTypeInfoBean.VIP_TYPE_SUPER_1MONTH.getMonthMoney() / 30;
+            // 获取此次支付的总金额
+            Integer allMoney = payQRcodeBeanBySql.getAllMoney();
+            // 支付总结/一天单价，得出购买天数，转换为ms，再加上当前用户会员剩余时间
+            newVipEndTime = DataUtil.timeDayToLong(allMoney / superVipdayMoney) + Long.parseLong(currentUserVipInfoBean.getEndTime());
+            // 更新用户vip数据到数据库
+
+        } else if (currentVipTypeEnum == VIP_TYPE.VIP_TYPE_SENIOR && payVipTypeEnum == VIP_TYPE.VIP_TYPE_SUPER) {
+            // 高级 -》 超级
+            newVipTypeForSql = VIP_TYPE.VIP_TYPE_SUPER;
+            newVipStartTime = DataUtil.getNowTimeToLong();
+            newVipEndTime = newVipStartTime + Long.parseLong(payQRcodeBeanBySql.getTimeLong());
+
+            // 升级，当前会员剩余时间折现，在转为购买会员时间
+            // 先判断当前用户会员剩余时间， 小于1天则直接忽略
+            long endTime = Long.parseLong(currentUserVipInfoBean.getEndTime());
+            if ((endTime = DataUtil.timeLongToDay(endTime - DataUtil.getNowTimeToLong())) > 1) {
+                // 会员剩余天数大于一天
+                // 查找支付二维码数据库， 计算高级会员一天多少钱
+                Integer seniorVipdayMoney = PayCodeVipTypeInfoBean.VIP_TYPE_SENIOR_1MONTH.getMonthMoney() / 30;
+                long endMoney = endTime * seniorVipdayMoney;
+                // 超级会员一天的价格
+                int superVipdayMoney = PayCodeVipTypeInfoBean.VIP_TYPE_SUPER_1MONTH.getMonthMoney() / 30;
+                // 如果折现的钱足以购买超级会员一天及以上，则添加到vip到期时间中
+                if (endMoney / superVipdayMoney > 0) {
+                    newVipEndTime += DataUtil.timeDayToLong(endMoney / superVipdayMoney);
+                }
+            }
+        } else {
+            // 普通 -》 高级or超级     高级-》高级  超级-》超级
+
+            // 当前为普通会员升级，则开始时间为当前时间， 结束时间为当前时间+购买的时间，
+            if (currentVipTypeEnum == VIP_TYPE.VIP_TYPE_ORDINARY) {
+                //
+                newVipStartTime = DataUtil.getNowTimeToLong();
+                newVipEndTime = Long.valueOf(payQRcodeBeanBySql.getTimeLong()) + newVipStartTime;
+            } else {
+                // 或者续费 高级-》高级  超级-》超级  会员开始时间不变， 结束时间加上购买的时间
+                newVipEndTime = Long.valueOf(payQRcodeBeanBySql.getTimeLong()) + Long.parseLong(currentUserVipInfoBean.getEndTime());
+            }
+            newVipTypeForSql = payVipTypeEnum;
+        }
+
+
+        // 将新的Vip数据存入数据库
+        UserVipInfoBean newUserVipInfoBean = UserVipInfoBean.newInstanceByVipType(
+                null, null, String.valueOf(newVipStartTime), String.valueOf(newVipEndTime), newVipTypeForSql
+        );
+        try {
+            DaoAgent.updataBeanForSQL(
+                    newUserVipInfoBean,
+                    currentUserVipInfoBean
+            );
+            LogUtil.i("支付回执： 更新用户VIP数据成功 new = " + newUserVipInfoBean.toString() + "__old = " + currentUserVipInfoBean.toString() );
+        } catch (SQLException e) {
+            LogUtil.e("支付回执， 更新用户VIP数据失败， new = " + newUserVipInfoBean.toString() + "__old = " + currentUserVipInfoBean.toString() , e);
+        }
+
+
+
+        // 将此次支付数据存入数据库
+        PayInfoBean payInfoBean = new PayInfoBean(null, currentUserVipInfoBean.getUserId());
+        payInfoBean.setAllData(requestBody);
+        payInfoBean.setMoney(payQRcodeBeanBySql.getAllMoney());
+        payInfoBean.setQrId(payQRcodeBeanBySql.getId());
+        long nowTimeToLong = DataUtil.getNowTimeToLong();
+        payInfoBean.setTimeToLong(String.valueOf(nowTimeToLong));
+        payInfoBean.setTimeFormat(DataUtil.timeFormatAllToString(nowTimeToLong));
+        try {
+            DaoAgent.insertBeanToSQL(payInfoBean);
+            LogUtil.i("支付回执： 添加支付数据至数据库成功" + payInfoBean);
+        } catch (SQLException e) {
+            LogUtil.e("支付回执： 添加支付数据至数据库失败" + payInfoBean.toString(), e );
+        }
+
+        LogUtil.i("支付回执： 回执流程成功 new = " + newUserVipInfoBean.toString() + "__old = " + currentUserVipInfoBean.toString() );
+
+        return ResultBean.createSucInfo("success");
     }
 
     @Override
