@@ -18,7 +18,8 @@ public class PayCodeVipTypeInfoBean {
             "31536000000",
             28800,
             2400,
-            7200
+            7200,
+            "尊敬的用户,您正在开通包年超级会员服务"
     );
     /**
      * 超级会员3个月
@@ -30,7 +31,8 @@ public class PayCodeVipTypeInfoBean {
             "7568640000",
             8100,
             2700,
-            900
+            900,
+            "尊敬的用户,您正在开通3个月超级会员服务"
     );
     /**
      * 超级会员一个月
@@ -42,7 +44,8 @@ public class PayCodeVipTypeInfoBean {
             "2678400000",
             3000,
             3000,
-            0
+            0,
+            "尊敬的用户,您正在开通1个月超级会员服务"
     );
 
     /**
@@ -55,7 +58,8 @@ public class PayCodeVipTypeInfoBean {
             "31536000000",
             14900,
             1240,
-            3100
+            3100,
+            "尊敬的用户,您正在开通包年高级会员服务"
     );
     /**
      * 高级会员3个月
@@ -67,7 +71,8 @@ public class PayCodeVipTypeInfoBean {
             "7568640000",
             3900,
             1300,
-            600
+            600,
+            "尊敬的用户,您正在开通3个月高级会员服务"
     );
     /**
      * 高级会员1个月
@@ -79,11 +84,12 @@ public class PayCodeVipTypeInfoBean {
             "2678400000",
             1500,
             1500,
-            0
+            0,
+            "尊敬的用户,您正在开通1个月高级会员服务"
     );
 
-    private static QRCodeVipTypeInfo createVipTypeInfo(int vipType, int timeNum, String timeUnit, String timeLong, int allMoney, int monthMoney, int saveMoney) {
-        return new QRCodeVipTypeInfo(vipType, timeNum, timeUnit, timeLong, allMoney, monthMoney, saveMoney);
+    private static QRCodeVipTypeInfo createVipTypeInfo(int vipType, int timeNum, String timeUnit, String timeLong, int allMoney, int monthMoney, int saveMoney, String qrName) {
+        return new QRCodeVipTypeInfo(vipType, timeNum, timeUnit, timeLong, allMoney, monthMoney, saveMoney, qrName);
     }
 
     public static class QRCodeVipTypeInfo {
@@ -95,8 +101,9 @@ public class PayCodeVipTypeInfoBean {
         private final int allMoney;
         private final int monthMoney;
         private final int saveMoney;
+        private final String qrName;
 
-        QRCodeVipTypeInfo(int vipType, int timeNum, String timeUnit, String timeLong, int allMoney, int monthMoney, int saveMoney) {
+        QRCodeVipTypeInfo(int vipType, int timeNum, String timeUnit, String timeLong, int allMoney, int monthMoney, int saveMoney, String qrName) {
             this.vipType = vipType;
             this.timeNum = timeNum;
             this.timeUnit = timeUnit;
@@ -104,6 +111,7 @@ public class PayCodeVipTypeInfoBean {
             this.allMoney = allMoney;
             this.monthMoney = monthMoney;
             this.saveMoney = saveMoney;
+            this.qrName = qrName;
         }
 
         public int getVipType() {
@@ -132,6 +140,10 @@ public class PayCodeVipTypeInfoBean {
 
         public int getSaveMoney() {
             return saveMoney;
+        }
+
+        public String getQrName() {
+            return qrName;
         }
 
         @Override

@@ -1,6 +1,7 @@
 package com.wu.immortal.half.sql;
 
 import com.sun.istack.internal.Nullable;
+import com.wu.immortal.half.sql.bean.PayQRcodeBean;
 import com.wu.immortal.half.sql.bean.UserInfoBean;
 import com.wu.immortal.half.sql.bean.UserVipInfoBean;
 import com.wu.immortal.half.sql.bean.enums.VIP_TYPE;
@@ -8,6 +9,8 @@ import com.wu.immortal.half.sql.dao.DaoManager;
 import com.wu.immortal.half.utils.DataUtil;
 import com.wu.immortal.half.utils.LogUtil;
 import com.wu.immortal.half.utils.PasswordEncryption;
+import com.wu.immortal.half.utils.PayUtil;
+import com.youzan.open.sdk.gen.v3_0_0.model.YouzanPayQrcodeCreateResult;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -107,6 +110,30 @@ public class DaoAgent {
         UserInfoBean userInfoBean = UserInfoBean.newInstanceByVipId(userVipInfoBean.getId());
 
         boolean updataSuc = DaoAgent.updataBeanForSQL(userInfoBean, newUserInfoBean);
+
+        Integer userId = userInfoBean.getId();
+        // todo 初始化支付二维码 待测试
+        PayUtil payUtil = PayUtil.getInstance();
+        PayQRcodeBean[] qRcodeBeans = new PayQRcodeBean[]{
+                PayQRcodeBean.createSuper1YearBean(userId),
+                PayQRcodeBean.createSuper3MonthBean(userId),
+                PayQRcodeBean.createSuper1MonthBean(userId),
+                PayQRcodeBean.createSenior1YearBean(userId),
+                PayQRcodeBean.createSenior3MonthBean(userId),
+                PayQRcodeBean.createSenior1MonthBean(userId)
+        };
+        for (PayQRcodeBean payQRcodeBean : qRcodeBeans) {
+            payQRcodeBean.setCreateTime(String.valueOf(DataUtil.getNowTimeToLong()));
+            YouzanPayQrcodeCreateResult payQR = payUtil.createPayQR(payQRcodeBean.getQrName(), String.valueOf(payQRcodeBean.getAllMoney()));
+            payQRcodeBean.setQrId(String.valueOf(payQR.getQrId()));
+            payQRcodeBean.setQrImg(payQR.getQrCode());
+            LogUtil.i("注册账号，插入支付二维码数据： " + payQRcodeBean.toString());
+            boolean b = DaoAgent.insertBeanToSQL(payQRcodeBean);
+            if (!b) {
+                LogUtil.e("注册账号失败，生成支付二维码成功，插入数据库失败");
+                return false;
+            }
+        }
 
         if (updataSuc) {
             LogUtil.i("账号注册流程成功：" + newUserInfoBean + "\n" + userVipInfoBean);

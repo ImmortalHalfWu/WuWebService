@@ -4,7 +4,7 @@ import com.wu.immortal.half.sql.bean.enums.VIP_TYPE;
 
 public class PayQRcodeBean extends BaseBean {
 
-    private Integer qrId;
+    private String qrId;
     private String qrImg;
     private String qrName;
     private Integer vipType;    // 对应会员类型，超级会员年11，6月12,1月13，高级会员，年21, 6月22，1月23
@@ -52,6 +52,7 @@ public class PayQRcodeBean extends BaseBean {
         payQRcodeBean.setTimeNum(vipTypeInfo.getTimeNum());
         payQRcodeBean.setTimeUnit(vipTypeInfo.getTimeUnit());
         payQRcodeBean.setVipType(vipTypeInfo.getVipType());
+        payQRcodeBean.setQrName(vipTypeInfo.getQrName());
         return payQRcodeBean;
     }
 
@@ -59,11 +60,11 @@ public class PayQRcodeBean extends BaseBean {
         super(id, userId);
     }
 
-    public Integer getQrId() {
+    public String getQrId() {
         return qrId;
     }
 
-    public void setQrId(Integer qrId) {
+    public void setQrId(String qrId) {
         this.qrId = qrId;
     }
 
