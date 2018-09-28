@@ -14,20 +14,19 @@ import java.util.Set;
 
 public class SqlUtil {
 
-    private static void sqlClose(@Nullable Statement statement, @Nullable ResultSet resultSet) {
-        if (statement != null) {
-            try {
+    private static void sqlClose(@Nullable Connection connection, @Nullable Statement statement, @Nullable ResultSet resultSet) {
+        try {
+            if (statement != null && !statement.isClosed()) {
                 statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-        }
-        if (resultSet != null) {
-            try {
+            if (resultSet != null && !resultSet.isClosed()) {
                 resultSet.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
     }
@@ -52,7 +51,7 @@ public class SqlUtil {
                 LogUtil.e("插入操作失败 ：" + sqlQueryBean.toString(), e);
                 throw e;
             } finally {
-                sqlClose(statement, resultSet);
+                sqlClose(connection, statement, resultSet);
             }
 
         }
@@ -128,23 +127,6 @@ public class SqlUtil {
             LogUtil.e("删除操作失败 ：" + sqlQueryBean.toString(), e);
             throw e;
         }
-//        PreparedStatement statement = null;
-//        ResultSet resultSet = null;
-//        if (connection != null) {
-//
-//            try {
-//                statement = connection.prepareStatement(
-//                        queryString
-//                );
-//                statement.executeUpdate();
-//
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//                throw e;
-//            } finally {
-//                sqlClose(statement, resultSet);
-//            }
-//        }
 
     }
 
@@ -189,24 +171,6 @@ public class SqlUtil {
             LogUtil.e("更新操作失败 ：new: " + sqlQueryBeanNewValue + "\nold: " + sqlQueryBeanOldValue, e);
             throw e;
         }
-        executeUpdate(connection, queryString);
-//        PreparedStatement statement = null;
-//        ResultSet resultSet = null;
-//        if (connection != null) {
-//
-//            try {
-//                statement = connection.prepareStatement(
-//                        queryString
-//                );
-//                statement.executeUpdate();
-//
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//                throw e;
-//            } finally {
-//                sqlClose(statement, resultSet);
-//            }
-//        }
     }
 
 
@@ -252,7 +216,7 @@ public class SqlUtil {
                 LogUtil.e("查表异常 ：" , e );
                 throw e;
             } finally {
-                sqlClose(statement, resultSet);
+                sqlClose(connection, statement, resultSet);
             }
         }
         return new JSONArray();
@@ -334,7 +298,7 @@ public class SqlUtil {
                 e.printStackTrace();
                 throw e;
             } finally {
-                sqlClose(statement, resultSet);
+                sqlClose(connection, statement, resultSet);
             }
         }
     }

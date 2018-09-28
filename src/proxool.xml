@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<something-else-entirely>
+
+    <proxool>
+
+        <alias>Develop</alias>
+
+        <driver-url>jdbc:mysql://localhost:3306/zhitou?useSSL=false&amp;serverTimezone=GMT%2B8&amp;autoReconnect=true</driver-url>
+
+        <driver-class>com.mysql.cj.jdbc.Driver</driver-class>
+
+        <driver-properties>
+
+            <property name="user" value="root"/>
+            <property name="password" value="mysql2b"/>
+            <property name="autoReconnect" value="true" />
+
+        </driver-properties>
+
+        <!--自动侦察各个连接状态的时间间隔(毫秒),侦察到空闲的连接就马上回收,超时的销毁-->
+        <house-keeping-sleep-time>90000</house-keeping-sleep-time>
+
+        <!--最少保持的空闲连接数-->
+        <prototype-count>2</prototype-count>
+
+        <!--允许最大连接数,超过了这个连接，再有请求时，就排在队列中-->
+        <maximum-connection-count>20</maximum-connection-count>
+
+        <!--最小连接数-->
+        <minimum-connection-count>5</minimum-connection-count>
+
+        <!--在使用之前测试-->
+        <test-before-use>true</test-before-use>
+
+        <!--最大的等待请求数,即因没有空闲连接可以分配而在队列中等候的最大请求数,超过这个请求数的 用户连接就不会被接受-->
+        <proxool.simultaneous-build-throttle>200</proxool.simultaneous-build-throttle>
+
+        <!--Test SQL(SELECT getDate()) -->
+        <house-keeping-test-sql>select CURRENT_DATE</house-keeping-test-sql>
+
+        <!--一个连接的最大寿命 5小时-->
+        <maximum-connection-lifetime>18000000</maximum-connection-lifetime>
+
+        <!--连接的活动时间大于这个数值.它将会杀掉这个线程-->
+        <maximum-active-time>10000</maximum-active-time>
+
+    </proxool>
+
+</something-else-entirely>

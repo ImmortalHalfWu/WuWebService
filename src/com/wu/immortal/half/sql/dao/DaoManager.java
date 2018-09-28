@@ -3,35 +3,24 @@ package com.wu.immortal.half.sql.dao;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.wu.immortal.half.configs.ApplicationConfig;
 import com.wu.immortal.half.sql.bean.*;
 import com.sun.istack.internal.Nullable;
+import com.wu.immortal.half.sql.dao.impls.ConnectionFactoryImpl;
 import com.wu.immortal.half.sql.dao.impls.SQLDaoImpl;
 import com.wu.immortal.half.utils.LogUtil;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DaoManager {
 
-    static {
-        try {
-            String driverClass = "com.mysql.cj.jdbc.Driver";
-            Class.forName(driverClass);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
     private static DaoManager daoManager;
     private SQLDaoImpl sqlDaoImpl;
-    private Connection connection;
 
     private DaoManager() {
-        connectSQL();
+        ConnectionFactoryImpl.instance();
         sqlDaoImpl = SQLDaoImpl.getInstance();
         LogUtil.i("DaoManager初始化完成");
     }
@@ -51,36 +40,31 @@ public class DaoManager {
     public <T> List<T> selectSQLForBean(T bean) throws SQLException {
         ArrayList<T> objects = new ArrayList<>();
         try {
-            if (connectSQL()) {
+            JSONArray jsonArray = sqlDaoImpl.selectFromSQL(
+                    createConnection(),
+                    findTableNameByBean(bean),
+                    bean);
 
-                JSONArray jsonArray = sqlDaoImpl.selectFromSQL(
-                        connection,
-                        findTableNameByBean(bean),
-                        bean);
-
-                if (jsonArray.isEmpty()) {
-                    objects.trimToSize();
-                    return objects;
-                }
-
-                for (int i = 0, size = jsonArray.size(); i < size; i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    objects.add(JSON.parseObject(jsonObject.toJSONString(),  (Class<T>) bean.getClass()));
-                }
+            if (jsonArray.isEmpty()) {
                 objects.trimToSize();
                 return objects;
             }
+
+            for (int i = 0, size = jsonArray.size(); i < size; i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                objects.add(JSON.parseObject(jsonObject.toJSONString(),  (Class<T>) bean.getClass()));
+            }
+            objects.trimToSize();
+            return objects;
         } catch (SQLException e) {
             e.printStackTrace();
             throw e;
         }
-        objects.trimToSize();
-        return objects;
     }
 
     public boolean insertBeanToSQL(Object bean) throws SQLException {
         try {
-            sqlDaoImpl.addToSQL(connection, findTableNameByBean(bean), bean);
+            sqlDaoImpl.addToSQL(createConnection(), findTableNameByBean(bean), bean);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,7 +74,7 @@ public class DaoManager {
 
     public boolean deleteBeanForSQL(Object bean) throws SQLException {
         try {
-            sqlDaoImpl.deleteFromSQL(connection, findTableNameByBean(bean), bean);
+            sqlDaoImpl.deleteFromSQL(createConnection(), findTableNameByBean(bean), bean);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,34 +84,12 @@ public class DaoManager {
 
     public boolean updataBeanForSQL(Object newBean, Object oldBean) throws SQLException {
         try {
-            sqlDaoImpl.updataToSQL(connection, findTableNameByBean(oldBean), newBean, oldBean);
+            sqlDaoImpl.updataToSQL(createConnection(), findTableNameByBean(oldBean), newBean, oldBean);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
-    }
-
-    private boolean connectSQL() {
-        try {
-            if (connection == null || connection.isClosed()) {
-                ApplicationConfig applicationConfig = ApplicationConfig.instance();
-                String sqlUrl = applicationConfig.getSqlUrl();
-                String sqlUser = applicationConfig.getSqlUser();
-                String sqlPassWord = applicationConfig.getSqlPassWord();
-//                String sqlUrl = "jdbc:mysql://localhost:3306/zhitou?useSSL=false&serverTimezone=GMT%2B8&autoReconnect=true";
-//                String sqlUser = "root";
-//                String sqlPassWord = "mysql2b";
-                LogUtil.i("尝试连接数据库");
-                connection = DriverManager.getConnection(sqlUrl, sqlUser, sqlPassWord);
-                LogUtil.i("连接数据库成功");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            LogUtil.e("连接数据库失败", e);
-            return false;
-        }
-        return true;
     }
 
     private static @Nullable String findTableNameByBean(Object bean) {
@@ -162,17 +124,21 @@ public class DaoManager {
 
     }
 
+    private Connection createConnection() {
+        Connection connection;
+            try {
+                while ((connection = ConnectionFactoryImpl.instance().createConnection()).isClosed());
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        return connection;
+    }
+
     public void release() {
         LogUtil.i("DaoManager释放");
         sqlDaoImpl = null;
-        try {
-            if (!connection.isClosed()) {
-                connection.close();
-            }
-        } catch (SQLException e) {
-            LogUtil.e("DaoManager释放失败", e);
-            e.printStackTrace();
-        }
+        ConnectionFactoryImpl.instance().release();
         LogUtil.i("DaoManager释放完成");
     }
 }

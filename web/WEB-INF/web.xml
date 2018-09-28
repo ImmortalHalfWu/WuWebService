@@ -22,6 +22,34 @@
         <url-pattern>/sayhellow</url-pattern>
     </servlet-mapping>
 
+    <!-- 配置初始化servlet,在web容器加载的时候自动加载配置文件，如果不是web程序，这个部分就需要通过开发接口来初始化了 -->
+
+    <servlet>
+        <servlet-name>proxoolInitialServlet</servlet-name>
+        <servlet-class>org.logicalcobwebs.proxool.configuration.ServletConfigurator</servlet-class>
+        <init-param>
+            <param-name>xmlFile</param-name>
+            <param-value>WEB-INF/classes/proxool.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>proxoolInitialServlet</servlet-name>
+        <url-pattern>/proxoolInitialServlet</url-pattern>
+    </servlet-mapping>
+
+    <!--配置监控servlet,其实如果不想监控的话，可以不配-->
+
+    <servlet>
+        <servlet-name>dbpoolAdmin</servlet-name>
+        <servlet-class>org.logicalcobwebs.proxool.admin.servlet.AdminServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>dbpoolAdmin</servlet-name>
+        <url-pattern>/dbpool</url-pattern>
+    </servlet-mapping>
 
     <!--
         注册

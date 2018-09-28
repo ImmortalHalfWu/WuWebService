@@ -32,6 +32,10 @@ public class WorkerFactory {
     }
 
 
+    /**
+     * 2018.09.28 使用数连接池， 不需要再关注连接状态
+     * @return 刷新数据库连接的任务
+     */
     private WorkInterface createRefreshSqlConnect() {
         long workerSqlRefreshDelay = ApplicationConfig.instance().getWorkerSqlRefreshDelay();
         return WorkSQLConnect.newInstance(
@@ -43,7 +47,7 @@ public class WorkerFactory {
     public WorkInterface[] getAllWorks() {
         return allWorker == null ? allWorker = new WorkInterface[]{
                 createRefreshPayToken(),
-                createRefreshSqlConnect()
+//                createRefreshSqlConnect()
         } : allWorker;
     }
 
