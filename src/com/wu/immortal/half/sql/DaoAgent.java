@@ -112,7 +112,6 @@ public class DaoAgent {
         boolean updataSuc = DaoAgent.updataBeanForSQL(userInfoBean, newUserInfoBean);
 
         Integer userId = newUserInfoBean.getId();
-        // todo 初始化支付二维码 待测试
         PayUtil payUtil = PayUtil.getInstance();
         PayQRcodeBean[] qRcodeBeans = new PayQRcodeBean[]{
                 PayQRcodeBean.createSuper1YearBean(userId),
@@ -126,7 +125,7 @@ public class DaoAgent {
             payQRcodeBean.setCreateTime(String.valueOf(DataUtil.getNowTimeToLong()));
             YouzanPayQrcodeCreateResult payQR = payUtil.createPayQR(payQRcodeBean.getQrName(), String.valueOf(payQRcodeBean.getAllMoney()));
             payQRcodeBean.setQrId(String.valueOf(payQR.getQrId()));
-            payQRcodeBean.setQrImg(payQR.getQrCode());
+            payQRcodeBean.setQrUrl(payQR.getQrUrl());
             LogUtil.i("注册账号，插入支付二维码数据： " + payQRcodeBean.toString());
             boolean b = DaoAgent.insertBeanToSQL(payQRcodeBean);
             if (!b) {

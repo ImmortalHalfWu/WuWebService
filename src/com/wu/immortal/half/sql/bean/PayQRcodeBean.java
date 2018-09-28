@@ -5,7 +5,6 @@ import com.wu.immortal.half.sql.bean.enums.VIP_TYPE;
 public class PayQRcodeBean extends BaseBean {
 
     private String qrId;
-    private String qrImg;
     private String qrName;
     private Integer vipType;    // 对应会员类型，超级会员年11，6月12,1月13，高级会员，年21, 6月22，1月23
     private VIP_TYPE enumVipType;   // 对应会员类型， 不参与数据库操作
@@ -16,6 +15,7 @@ public class PayQRcodeBean extends BaseBean {
     private Integer monthMoney;    // 对应一个月多少钱，单位分
     private String createTime;  // 创建时间
     private Integer saveMoney;   // 节省了多少钱，单位分
+    private String qrUrl;       // 支付二维码对应的url
 
 
     public static PayQRcodeBean createSuper1YearBean(Integer userId) {
@@ -59,10 +59,9 @@ public class PayQRcodeBean extends BaseBean {
         super(id, userId);
     }
 
-    public PayQRcodeBean(Integer id, Integer userId, String qrId, String qrImg, String qrName, Integer vipType, Integer timeNum, String timeUnit, String timeLong, Integer allMoney, Integer monthMoney, String createTime, Integer saveMoney) {
+    public PayQRcodeBean(Integer id, Integer userId, String qrId, String qrName, Integer vipType, Integer timeNum, String timeUnit, String timeLong, Integer allMoney, Integer monthMoney, String createTime, Integer saveMoney) {
         super(id, userId);
         this.qrId = qrId;
-        this.qrImg = qrImg;
         this.qrName = qrName;
         this.vipType = vipType;
         this.timeNum = timeNum;
@@ -80,14 +79,6 @@ public class PayQRcodeBean extends BaseBean {
 
     public void setQrId(String qrId) {
         this.qrId = qrId;
-    }
-
-    public String getQrImg() {
-        return qrImg;
-    }
-
-    public void setQrImg(String qrImg) {
-        this.qrImg = qrImg;
     }
 
     public String getQrName() {
@@ -176,11 +167,18 @@ public class PayQRcodeBean extends BaseBean {
         this.saveMoney = saveMoney;
     }
 
+    public String getQrUrl() {
+        return qrUrl;
+    }
+
+    public void setQrUrl(String qrUrl) {
+        this.qrUrl = qrUrl;
+    }
+
     @Override
     public String toString() {
         return "PayQRcodeBean{" +
                 "qrId=" + qrId +
-                ", qrImg='" + qrImg + '\'' +
                 ", qrName='" + qrName + '\'' +
                 ", vipType=" + vipType +
                 ", enumVipType=" + enumVipType +
