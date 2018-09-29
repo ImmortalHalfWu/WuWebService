@@ -59,7 +59,7 @@ public class PayQRcodeBean extends BaseBean {
         super(id, userId);
     }
 
-    public PayQRcodeBean(Integer id, Integer userId, String qrId, String qrName, Integer vipType, Integer timeNum, String timeUnit, String timeLong, Integer allMoney, Integer monthMoney, String createTime, Integer saveMoney) {
+    public PayQRcodeBean(Integer id, Integer userId, String qrId, String qrName, Integer vipType, Integer timeNum, String timeUnit, String timeLong, Integer allMoney, Integer monthMoney, String createTime, Integer saveMoney, String qrUrl) {
         super(id, userId);
         this.qrId = qrId;
         this.qrName = qrName;
@@ -71,6 +71,7 @@ public class PayQRcodeBean extends BaseBean {
         this.monthMoney = monthMoney;
         this.createTime = createTime;
         this.saveMoney = saveMoney;
+        this.qrUrl = qrUrl;
     }
 
     public String getQrId() {

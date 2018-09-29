@@ -42,7 +42,7 @@
         <!--一个连接的最大寿命 5小时-->
         <maximum-connection-lifetime>18000000</maximum-connection-lifetime>
 
-        <!--连接的活动时间大于这个数值.它将会杀掉这个线程-->
+        <!--连接的活动时间大于这个数值.它将会杀掉这个连接-->
         <maximum-active-time>10000</maximum-active-time>
 
     </proxool>

@@ -1,5 +1,7 @@
 package com.wu.immortal.half.servlet;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.sun.istack.internal.Nullable;
 import com.wu.immortal.half.beans.ResultBean;
@@ -8,8 +10,10 @@ import com.wu.immortal.half.configs.ApplicationConfig;
 import com.wu.immortal.half.jsons.JsonWorkInterface;
 import com.wu.immortal.half.servlet.base.BaseServletServlet;
 import com.wu.immortal.half.sql.DaoAgent;
+import com.wu.immortal.half.sql.bean.PayQRcodeBean;
 import com.wu.immortal.half.sql.bean.UserInfoBean;
 import com.wu.immortal.half.sql.bean.UserVipInfoBean;
+import com.wu.immortal.half.sql.bean.enums.VIP_TYPE;
 import com.wu.immortal.half.utils.*;
 
 import javax.servlet.ServletException;
@@ -102,10 +106,51 @@ public class LoginServlet extends BaseServletServlet {
             return ResultBean.REQUEST_ERRO_SQL;
         }
 
+
+        // 获取支付二维码数据 todo 不能只传二维码url，服务器热更新
+        List<PayQRcodeBean> payQRcodeBeans;
+        try {
+            payQRcodeBeans = DaoAgent.selectSQLForBean(new PayQRcodeBean(null, userInfoBeanBySql.getId()));
+            if (payQRcodeBeans.size() == 0) {
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            LogUtil.e("登录失败，获取用户支付二维码数据失败 userId = "+ userInfoBeanBySql.getId());
+            return ResultBean.REQUEST_ERRO_SQL;
+        }
+
+        JsonArray jsonArraySuperVip = new JsonArray();
+        JsonArray jsonArraySeniorVip = new JsonArray();
+        // 排序
+        for (PayQRcodeBean payQRcodeBean : payQRcodeBeans) {
+            payQRcodeBean.setId(null);
+            payQRcodeBean.setQrId(null);
+            payQRcodeBean.setQrName(null);
+            payQRcodeBean.setCreateTime(null);
+            payQRcodeBean.setUserId(null);
+
+            JsonElement payQRcodeBeanJsonElement = gson.toJsonElement(payQRcodeBean);
+            switch (payQRcodeBean.getEnumVipType()) {
+                // 高级会员
+                case VIP_TYPE_SENIOR:
+                    jsonArraySeniorVip.add(payQRcodeBeanJsonElement);
+                    break;
+                default:
+                    // 超级会员
+                    jsonArraySuperVip.add(payQRcodeBeanJsonElement);
+            }
+        }
+
+        JsonObject payQrInfoJsonObject = new JsonObject();
+        payQrInfoJsonObject.add("superVip", jsonArraySuperVip);
+        payQrInfoJsonObject.add("seniorVip", jsonArraySeniorVip);
+
+
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("token", token);
         jsonObject.addProperty("phone", userInfoBeanBySql.getPhone());
         jsonObject.add("vipInfo", gson.toJsonElement(userVipInfoBean));
+        jsonObject.add("vipQR", gson.toJsonElement(payQrInfoJsonObject));
         String loginResultJson = jsonObject.toString();
         LogUtil.i("登录成功：" + loginResultJson);
         ApplicationConfig.instance().setDebug(false);
