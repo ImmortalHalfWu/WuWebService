@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * 删除扫描
+ */
 @WebServlet(name = "ScanDeleteServlet")
 public class ScanDeleteServlet extends BaseServletServlet {
 
@@ -37,11 +40,11 @@ public class ScanDeleteServlet extends BaseServletServlet {
         }
 
         try {
-            List<ScanInfoBean> scanInfoBeans = DaoAgent.selectSQLForBean(scanInfoBean);
-            if (scanInfoBeans.size() == 0) {
-                return ResultBean.createSucInfo("");
-            }
-            scanInfoBean = scanInfoBeans.get(0);
+//            List<ScanInfoBean> scanInfoBeans = DaoAgent.selectSQLForBean(scanInfoBean);
+//            if (scanInfoBeans.size() == 0) {
+//                return ResultBean.createSucInfo("");
+//            }
+//            scanInfoBean = scanInfoBeans.get(0);
 
             boolean isSuc = DaoAgent.deleteBeanForSQL(scanInfoBean);
 

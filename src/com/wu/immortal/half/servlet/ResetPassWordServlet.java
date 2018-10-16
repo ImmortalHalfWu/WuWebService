@@ -52,7 +52,7 @@ public class ResetPassWordServlet extends BaseServletServlet {
             passWord = PasswordEncryption.getEncryptedPassword(passWord, salt);
 
             DaoAgent.updataBeanForSQL(
-                    UserInfoBean.newInstanceByReset(passWord, salt),
+                    UserInfoBean.newInstanceByResetPassWord(passWord, salt),
                     userInfoBeanByPhone);
 
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {

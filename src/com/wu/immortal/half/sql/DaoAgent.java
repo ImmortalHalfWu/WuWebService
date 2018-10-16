@@ -160,16 +160,22 @@ public class DaoAgent {
      * 获取指定用户的VIP信息
      * @param userId 用户ID
      * @return VIP信息
-     * @throws SQLException 查库失败
      */
-    public static @Nullable UserVipInfoBean findVipInfoByUserId(int userId) throws SQLException {
+    public static @Nullable UserVipInfoBean findVipInfoByUserId(int userId) {
 
-        List<UserVipInfoBean> userVipInfoBeans = selectSQLForBean(UserVipInfoBean.newInstanceByUserId(userId));
-        if (userVipInfoBeans.size() == 0) {
-            return null;
+        try {
+            List<UserVipInfoBean> userVipInfoBeans;
+            userVipInfoBeans = selectSQLForBean(UserVipInfoBean.newInstanceByUserId(userId));
+
+            if (userVipInfoBeans.size() == 0) {
+                return null;
+            }
+
+            return userVipInfoBeans.get(0);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        return userVipInfoBeans.get(0);
-
+        return null;
     }
+
 }

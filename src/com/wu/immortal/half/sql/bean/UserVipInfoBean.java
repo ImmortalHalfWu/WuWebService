@@ -64,6 +64,26 @@ public class UserVipInfoBean extends BaseBean{
         return endTimeFormat;
     }
 
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setVipType(Integer vipType) {
+        this.vipType = vipType;
+    }
+
+    public void setStartTimeFormat(String startTimeFormat) {
+        this.startTimeFormat = startTimeFormat;
+    }
+
+    public void setEndTimeFormat(String endTimeFormat) {
+        this.endTimeFormat = endTimeFormat;
+    }
+
     @Override
     public String toString() {
         return "UserVipInfoBean{" +

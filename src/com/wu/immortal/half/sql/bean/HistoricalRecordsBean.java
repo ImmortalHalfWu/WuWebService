@@ -22,7 +22,7 @@ public class HistoricalRecordsBean extends BaseBean {
     private Integer scanOrOrder;
 
 
-    public HistoricalRecordsBean(
+    private HistoricalRecordsBean(
             Integer id,
             Integer userId,
             Integer platformType,
@@ -139,7 +139,7 @@ public class HistoricalRecordsBean extends BaseBean {
             String erroMsg,
             SCAN_OR_ORDER_TYPE scanOrOrderType) {
         return new HistoricalRecordsBean(
-                null, 0,
+                null, null,
                 platformType.getCode(),  tagName,
                 orderType.getCode(), orderTime,
                 stockNum, stockMoney,

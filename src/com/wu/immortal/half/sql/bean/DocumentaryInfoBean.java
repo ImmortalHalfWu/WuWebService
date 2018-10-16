@@ -31,6 +31,9 @@ public class DocumentaryInfoBean extends ScanInfoBean {
     }
 
     public DOCUMENTARY_TYPE getDocumentaryTypeEnum() {
+        if (documentaryTypeEnum == null && documentaryType != null) {
+            documentaryTypeEnum = DOCUMENTARY_TYPE.valueOf(documentaryType);
+        }
         return documentaryTypeEnum;
     }
 
@@ -56,6 +59,11 @@ public class DocumentaryInfoBean extends ScanInfoBean {
             }
         }
         return NULL_INSTANCE;
+    }
+
+    @Override
+    public boolean checkNull() {
+        return super.checkNull() || positionRatio == null || documentaryType == null;
     }
 
     public static DocumentaryInfoBean newInstance(

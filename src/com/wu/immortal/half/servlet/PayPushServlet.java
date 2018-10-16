@@ -11,6 +11,7 @@ import com.wu.immortal.half.sql.bean.*;
 import com.wu.immortal.half.sql.bean.enums.VIP_TYPE;
 import com.wu.immortal.half.utils.DataUtil;
 import com.wu.immortal.half.utils.LogUtil;
+import com.wu.immortal.half.utils.VIPWithAuthorityUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -141,10 +142,32 @@ public class PayPushServlet extends BaseServletServlet {
                 null, null, String.valueOf(newVipStartTime), String.valueOf(newVipEndTime), newVipTypeForSql
         );
         try {
+            // todo 修正数据库状态，清空对应用户token，强制用户重新登录，更新数据库数据，scan列表。跟投列表
+            // 更新用户会员状态
             DaoAgent.updataBeanForSQL(
                     newUserVipInfoBean,
                     currentUserVipInfoBean
             );
+            // 更新用户token， 强制重新登录
+            UserInfoBean newUserInfoBean = UserInfoBean.newInstanceByTokenLogin("", false);
+            UserInfoBean currentUserInfoBean = UserInfoBean.newInstance();
+            currentUserInfoBean.setUserId(currentUserVipInfoBean.getUserId());
+            if (DaoAgent.updataBeanForSQL(newUserInfoBean, currentUserInfoBean)) {
+                LogUtil.i("支付回执： 更新用户token成功");
+            } else {
+                LogUtil.e("支付回执： 更新用户token失败，vipId:" + currentUserVipInfoBean.getId());
+            }
+
+            // 更新数据库数据，scan列表。跟投列表，修改是否可用
+            if (VIPWithAuthorityUtil.vipInfoChangeToSQL(newUserVipInfoBean.getVipTypeEnum(), currentUserVipInfoBean.getUserId())) {
+                LogUtil.i("支付回执： 更新用户扫描列表，跟投列表成功");
+            } else {
+                LogUtil.e("支付回执： 更新用户扫描列表，跟投列表失败，toVipType = " +
+                        newUserVipInfoBean.getVipTypeEnum() +
+                        "__UserId = " +
+                        currentUserVipInfoBean.getUserId());
+            }
+
             LogUtil.i("支付回执： 更新用户VIP数据成功 new = " + newUserVipInfoBean.toString() + "__old = " + currentUserVipInfoBean.toString() );
         } catch (SQLException e) {
             LogUtil.e("支付回执， 更新用户VIP数据失败， new = " + newUserVipInfoBean.toString() + "__old = " + currentUserVipInfoBean.toString() , e);

@@ -26,11 +26,12 @@ public class FinalUtil {
 
 
 
-
+    // 扫描频率 30s/次
     public static final int SCAN_FREQUENCY_ORDINARY = 30;
+    // 扫描频率 5s/次
     public static final int SCAN_FREQUENCY_SENIOR = 5;
+    // 扫描频率 1s/次
     public static final int SCAN_FREQUENCY_SUPER = 1;
-
 
 
 

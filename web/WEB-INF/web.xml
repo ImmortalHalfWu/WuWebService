@@ -178,8 +178,42 @@
     </servlet-mapping>
 
 
+    <!--
+        添加跟投
+    -->
+    <servlet>
+        <servlet-name>AddDocumentary</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.DocumentaryAddServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddDocumentary</servlet-name>
+        <url-pattern>/addDocumentary</url-pattern>
+    </servlet-mapping>
+
+    <!--
+        删除跟投
+    -->
+    <servlet>
+        <servlet-name>DeleteDocumentary</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.DocumentarDeleteServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteDocumentary</servlet-name>
+        <url-pattern>/deleteDocumentary</url-pattern>
+    </servlet-mapping>
 
 
+    <!--
+        修改跟投
+    -->
+    <servlet>
+        <servlet-name>ChangeDocumentary</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.DocumentarCHangeInfoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ChangeDocumentary</servlet-name>
+        <url-pattern>/changeDocumentary</url-pattern>
+    </servlet-mapping>
 
 
 

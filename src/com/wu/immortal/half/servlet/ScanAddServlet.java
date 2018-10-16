@@ -9,8 +9,11 @@ import com.wu.immortal.half.sql.DaoAgent;
 import com.wu.immortal.half.sql.bean.ScanInfoBean;
 import com.wu.immortal.half.sql.bean.UserInfoBean;
 import com.wu.immortal.half.sql.bean.UserVipInfoBean;
+import com.wu.immortal.half.sql.bean.enums.DOCUMENTARY_TYPE;
+import com.wu.immortal.half.sql.bean.enums.ORDER_TYPE;
 import com.wu.immortal.half.sql.bean.enums.VIP_TYPE;
 import com.wu.immortal.half.utils.LogUtil;
+import com.wu.immortal.half.utils.VIPWithAuthorityUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,12 +21,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.wu.immortal.half.sql.bean.enums.VIP_TYPE.VIP_TYPE_ORDINARY;
-import static com.wu.immortal.half.sql.bean.enums.VIP_TYPE.VIP_TYPE_SENIOR;
-import static com.wu.immortal.half.sql.bean.enums.VIP_TYPE.VIP_TYPE_SUPER;
-import static com.wu.immortal.half.utils.FinalUtil.SCAN_FREQUENCY_ORDINARY;
-import static com.wu.immortal.half.utils.FinalUtil.SCAN_FREQUENCY_SENIOR;
-import static com.wu.immortal.half.utils.FinalUtil.SCAN_FREQUENCY_SUPER;
 
 
 /**
@@ -64,22 +61,14 @@ public class ScanAddServlet extends BaseServletServlet {
 
         // 匹配权限， 是否是合法扫描
         UserVipInfoBean userVipInfoBean;
-        try {
-            userVipInfoBean = DaoAgent.findVipInfoByUserId(tokenInfoBean.getUserId());
-            if (userVipInfoBean == null) {
-                return ResultBean.REQUEST_ERRO_JSON;
-            }
-        } catch (SQLException e) {
-            LogUtil.e("查找用户VIP数据失败", e);
-            return ResultBean.REQUEST_ERRO_SQL;
+        userVipInfoBean = DaoAgent.findVipInfoByUserId(tokenInfoBean.getUserId());
+        if (userVipInfoBean == null) {
+            return ResultBean.REQUEST_ERRO_JSON;
         }
 
         LogUtil.i(TAG + "开始匹配用户信息与扫描信息是否匹配");
 
-        VIP_TYPE vipTypeEnum = userVipInfoBean.getVipTypeEnum();
-        boolean isCanUser = (vipTypeEnum == VIP_TYPE_ORDINARY && scanInfoBean.getFrequency() == SCAN_FREQUENCY_ORDINARY
-                || vipTypeEnum == VIP_TYPE_SENIOR && scanInfoBean.getFrequency() == SCAN_FREQUENCY_SENIOR
-                || vipTypeEnum == VIP_TYPE_SUPER && scanInfoBean.getFrequency() == SCAN_FREQUENCY_SUPER);
+        boolean isCanUser = VIPWithAuthorityUtil.authScanInfo(userVipInfoBean.getVipTypeEnum(), scanInfoBean);
 
         LogUtil.i(TAG + "匹配结果，" + isCanUser);
 
@@ -96,15 +85,13 @@ public class ScanAddServlet extends BaseServletServlet {
                 throw new SQLException();
             }
 
-            List<ScanInfoBean> scanInfoBeans = DaoAgent.selectSQLForBean(scanInfoBean);
-            scanInfoBean = scanInfoBeans.get(0);
-            LogUtil.i(TAG + " 插入数据库成功, 完成添加");
-            return ResultBean.createSucInfo(gson.toJsonElement(scanInfoBean));
-
         } catch (SQLException e) {
             LogUtil.e(TAG + "扫描数据插入失败，" + scanInfoBean.toString());
             return ResultBean.REQUEST_ERRO_SQL;
         }
+
+        LogUtil.i(TAG + " 插入数据库成功, 完成添加");
+        return ResultBean.createSucInfo("");
 
     }
 
