@@ -84,7 +84,7 @@ public class LoginServlet extends BaseServletServlet {
             return ResultBean.REQUEST_ERRO_SQL;
         }
 
-        // todo 会员过期的判断， 要修正数据库信息，测试
+        // 会员过期的判断， 要修正数据库信息,scan列表。跟投列表
         UserVipInfoBean userVipInfoBean = userVipInfoBeans.get(0);
         long vipEndTime = Long.valueOf(userVipInfoBean.getEndTime());
         // 会员到期，修正数据库信息
@@ -107,7 +107,13 @@ public class LoginServlet extends BaseServletServlet {
             } catch (SQLException e) {
                 LogUtil.e("会员过期，修正数据库会员状态失败", e);
             }
+            userVipInfoBean.setEndTime(String.valueOf(vipEndTime));
+            userVipInfoBean.setEndTimeFormat(DataUtil.timeFormatYMDToString(vipEndTime));
+            userVipInfoBean.setVipType(VIP_TYPE.VIP_TYPE_ORDINARY.getCode());
         }
+
+        userVipInfoBean.setId(null);
+        userVipInfoBean.setUserId(null);
 
         //  验证成功， 生成token+用户信息+vip信息
         // 刷新用户Token值， 跟新登录状态
@@ -128,7 +134,7 @@ public class LoginServlet extends BaseServletServlet {
         }
 
 
-        // 获取支付二维码数据 todo 服务器热更新
+        // 获取支付二维码数据
         List<PayQRcodeBean> payQRcodeBeans;
         try {
             payQRcodeBeans = DaoAgent.selectSQLForBean(new PayQRcodeBean(null, userInfoBeanBySql.getId()));

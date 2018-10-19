@@ -42,24 +42,20 @@ public class DocumentaryInfoBean extends ScanInfoBean {
     }
 
 
-    private static DocumentaryInfoBean NULL_INSTANCE;
 
     public static DocumentaryInfoBean newInstance() {
-        if (NULL_INSTANCE == null) {
-            synchronized (DocumentaryInfoBean.class) {
-                NULL_INSTANCE = new DocumentaryInfoBean(null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null);
-            }
-        }
-        return NULL_INSTANCE;
+        return new DocumentaryInfoBean(null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
     }
+
+
 
     @Override
     public boolean checkNull() {
