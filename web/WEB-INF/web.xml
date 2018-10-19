@@ -216,6 +216,18 @@
     </servlet-mapping>
 
 
+    <!--
+        获取所有跟投
+    -->
+    <servlet>
+        <servlet-name>GetAllDocumentary</servlet-name>
+        <servlet-class>com.wu.immortal.half.servlet.DocumentaGetAllInfoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetAllDocumentary</servlet-name>
+        <url-pattern>/getAllDocumentary</url-pattern>
+    </servlet-mapping>
+
 
 
     <!--=======================================支付回执+短信接口======================================================-->

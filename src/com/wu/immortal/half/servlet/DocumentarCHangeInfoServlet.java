@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet(name = "DocumentarCHangeInfoServlet")
 public class DocumentarCHangeInfoServlet extends BaseServletServlet {
@@ -32,6 +33,23 @@ public class DocumentarCHangeInfoServlet extends BaseServletServlet {
         if (newDocumentaryInfoBean.checkNull() || newDocumentaryInfoBean.getId() == null || newDocumentaryInfoBean.getUserId() == null) {
             return ResultBean.REQUEST_ERRO_JSON;
         }
+
+
+        // 判断是否已经存在指定的url
+        DocumentaryInfoBean documentaryInfoBeanByScanUrl = DocumentaryInfoBean.newInstance();
+        documentaryInfoBeanByScanUrl.setScanUrl(newDocumentaryInfoBean.getScanUrl());
+        documentaryInfoBeanByScanUrl.setUserId(tokenInfoBean.getUserId());
+        try {
+            List<DocumentaryInfoBean> documentaryInfoBeans = DaoAgent.selectSQLForBean(documentaryInfoBeanByScanUrl);
+            for (DocumentaryInfoBean indexBean : documentaryInfoBeans) {
+                if (!indexBean.getId().equals(newDocumentaryInfoBean.getId()) && indexBean.getScanUrl().equals(newDocumentaryInfoBean.getScanUrl())) {
+                    LogUtil.i("修改跟投配置，但指定url已存在于数据库， " + newDocumentaryInfoBean.toString());
+                    return ResultBean.REQUEST_ERRO_SCAN_ADD_REPEAT;
+                }
+            }
+        } catch (SQLException ignored) {
+        }
+
 
         // 匹配权限， 是否是合法扫描
         UserVipInfoBean userVipInfoBean;

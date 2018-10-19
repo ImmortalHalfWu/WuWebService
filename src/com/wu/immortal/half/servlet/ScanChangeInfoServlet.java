@@ -43,6 +43,25 @@ public class ScanChangeInfoServlet extends BaseServletServlet {
             return ResultBean.REQUEST_ERRO_JSON;
         }
 
+        // 同一网址只能添加一个
+        try {
+            List<ScanInfoBean> scanInfoBeansByUrl =
+                    DaoAgent.selectSQLForBean(
+                            ScanInfoBean.newInstanceByUrl(scanInfoBean.getScanUrl(), tokenInfoBean.getUserId()
+                            )
+                    );
+            for (ScanInfoBean indexScanBean : scanInfoBeansByUrl) {
+                if (!indexScanBean.getId().equals(scanInfoBean.getId()) && indexScanBean.getScanUrl().equals(scanInfoBean.getScanUrl())) {
+                    LogUtil.i(TAG + "更改扫描配置， 但数据库中已存在指定网址，" + scanInfoBean.toString() );
+                    return ResultBean.REQUEST_ERRO_SCAN_ADD_REPEAT;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            LogUtil.e(TAG + "", e);
+        }
+
+
         // 判断更改后是否合法， 与vip数据匹配
         // 匹配权限， 是否是合法扫描
         UserVipInfoBean userVipInfoBean;
@@ -77,6 +96,7 @@ public class ScanChangeInfoServlet extends BaseServletServlet {
             LogUtil.i(TAG + "失败， 未找到要修改的扫描");
             return ResultBean.REQUEST_ERRO_SCAN_UPADTA_NOT_FOUND;
         }
+
         LogUtil.i(TAG + "查找成功");
         try {
             boolean isSuc = DaoAgent.updataBeanForSQL(scanInfoBean, scanInfoBeanBySQL);

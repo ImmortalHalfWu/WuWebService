@@ -13,6 +13,7 @@ import com.wu.immortal.half.sql.bean.enums.ORDER_TYPE;
 import com.wu.immortal.half.sql.bean.enums.VIP_TYPE;
 import com.wu.immortal.half.utils.LogUtil;
 import com.wu.immortal.half.utils.VIPWithAuthorityUtil;
+import sun.rmi.runtime.Log;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 import static com.wu.immortal.half.sql.bean.enums.VIP_TYPE.VIP_TYPE_ORDINARY;
 import static com.wu.immortal.half.sql.bean.enums.VIP_TYPE.VIP_TYPE_SENIOR;
@@ -45,6 +47,21 @@ public class DocumentaryAddServlet extends BaseServletServlet {
             LogUtil.e(TAG + " json数据不完整");
             return ResultBean.REQUEST_ERRO_JSON;
         }
+
+
+        // 判读是否已存在此网址
+        DocumentaryInfoBean documentaryInfoBeanByScanUrl = DocumentaryInfoBean.newInstance();
+        documentaryInfoBeanByScanUrl.setScanUrl(documentaryInfoBean.getScanUrl());
+        documentaryInfoBeanByScanUrl.setUserId(tokenInfoBean.getUserId());
+        try {
+            List<DocumentaryInfoBean> documentaryInfoBeans = DaoAgent.selectSQLForBean(documentaryInfoBeanByScanUrl);
+            if (documentaryInfoBeans.size() != 0) {
+                LogUtil.i("重复添加跟投， url = " + documentaryInfoBean.getScanUrl());
+                return ResultBean.REQUEST_ERRO_SCAN_ADD_REPEAT;
+            }
+        } catch (SQLException ignored) {
+        }
+
 
         // 匹配权限， 是否是合法扫描
         UserVipInfoBean userVipInfoBean;
