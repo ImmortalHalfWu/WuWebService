@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PopwindowSample</title>
+    <link rel="stylesheet" href="layui/css/layui.css"/>
+    <script src="layui/layui.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body>
+
+<textarea id="mp1">1231</textarea>
+<button id="button1">show pop</button>
+
+</body>
+
+<script>
+
+    // 加载模块
+    layui.config({
+        base: 'js/' //假设这是你存放拓展模块的根目录
+    }).extend({ //设定模块别名
+        sysdata: 'sysdata'
+    });
+
+    layui.use(['layer', 'form', 'sysdata'], function () {
+        var $ = layui.jquery
+            , sysdata = layui.sysdata;
+
+        $("#button1").click(function () {
+            // var str = $("#mp1").val();// 获取界面上的json内容
+            // var data = JSON.parse(str); // 转化成json格式的数据
+            var data = $("#mp1").val();
+
+            //保存数据并获取 datakey
+            var datakey = sysdata.saveDataObj({
+                data: data
+            });
+
+            // 弹出子界面, 并把 datakey 传到子界面
+            layer.open({
+                title: ['可修改内容并关闭这个界面']
+                , type: 2
+                , fixed: false
+                , shadeClose: true
+                , area: ['600px', '300px']
+                , content: 'ScanSettingHtml.html?datakey=' + datakey
+                , end: function () {
+                    //  层销毁后, 取出回调数据
+                    var d = sysdata.getDataObj({key: datakey});
+
+                    initDemo(d);
+
+                    // 清除数据
+                    sysdata.cleanData({key: datakey});
+                }
+            });
+        });
+
+        /**
+         * 改变界面上文本域的值
+         */
+        function initDemo(str) {
+            $("#mp1").val(str);
+        }
+    });
+</script>
+
+</html>

@@ -1,0 +1,35 @@
+
+/* 内容区左边距设为0，否则会留下侧边栏的位置 */
+.layui-body {
+  left: 0;
+}
+
+/* 导航背景色*/
+.layui-header {
+  background-color: #EEF0F6!important;
+}
+
+/* 导航字体大小 */
+/*.layui-nav * {*/
+/*font-size: 23px;*/
+/*}*/
+
+/* 导航下划线选中颜色 */
+.layui-nav .layui-this:after, .layui-nav-bar, .layui-nav-tree .layui-nav-itemed:after {
+  background-color: #1E9FFF;
+}
+
+/* 导航tab左右边距*/
+.layui-nav-item {
+  margin: 0 30px 0 30px;
+}
+
+/* 导航字体未选中颜色 */
+.layui-nav .layui-nav-item a {
+  color:#4D4B4B;
+}
+
+/* 导航字体选中颜色 */
+.layui-nav .layui-nav-item a:hover,.layui-nav .layui-this a{
+  color:#1E9FFF
+}

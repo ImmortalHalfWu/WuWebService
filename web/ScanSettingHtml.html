@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ScanSettingHtml</title>
+    <link rel="stylesheet" href="layui/css/layui.css"/>
+    <script src="layui/layui.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body>
+
+    <div class="layui-container" style="margin-top: 10px">
+
+        <div class="layui-row">
+                网址：
+                123
+        </div>
+
+        <hr>
+
+        <div class="layui-row">
+                最新调仓
+                <img src="tile.png" style="width: 15px; height: 15px;">
+                <img src="tile.png" style="width: 15px; height: 15px;">
+                2018-08-14 14:41:51
+            <div class="layui-row">
+                <div class="layui-col-xs4">SZ150131</div>
+                <div class="layui-col-xs4" style="text-align: center">SZ150131</div>
+                <div class="layui-col-xs4" style="text-align: right">SZ150131</div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="layui-row">
+
+            指定交易类型：<img id="tipsImag" src="tile.png" style="width: 10px; position: absolute; float: top">
+            <div class="layui-row radio-1" style=" padding: 10px 0 10px 0">
+                    <div class="layui-col-xs4" style=" " >
+                        <input type="radio" name="radio-1" id="radio-1-1" checked="checked" onclick="setScan()">
+                        <label for="radio-1-1"  style="float: left; ">智能扫描</label>
+                    </div>
+                    <div class="layui-col-xs4" style="height:100%; ">
+                        <input type="radio" name="radio-1" id="radio-1-2" >
+                        <label for="radio-1-2" style="float: right; clear: left; position: relative; margin-right: 25%; text-align: center">扫描跟单</label>
+                    </div>
+                    <div class="layui-col-xs4" style="background-color: #FF00FF; ">
+                        <!--<input type="radio" name="radio-1" id="radio-1-3">-->
+                        <!--<label for="radio-1-3" style="float: right;  ">111</label>-->
+                    </div>
+            </div>
+
+            指定交易类型：<img id="tipsImag1" src="tile.png" style="width: 10px; position: absolute; float: top">
+            <div class="layui-row">
+                <div class="layui-row radio-1" style=" padding: 10px 0 10px 0">
+                    <div class="layui-col-xs4" >
+                        <input type="radio" name="radio-2" id="radio-1-4" checked="checked" onclick="setScan()">
+                        <label for="radio-1-4"  style="float: left;">买</label>
+                    </div>
+                    <div class="layui-col-xs4" style="padding-top: 8px">
+                        <input type="radio" name="radio-2" id="radio-1-5"  >
+                        <label for="radio-1-5" style="">卖</label>
+                    </div>
+                    <div class="layui-col-xs4">
+                        <input type="radio" name="radio-2" id="radio-1-6">
+                        <label for="radio-1-6" style="float: right; ">全部</label>
+                    </div>
+                </div>
+            </div>
+
+            指定扫描频率：
+            <div class="layui-row">
+
+                <div class="layui-row radio-1" style=" padding: 10px 0 10px 0">
+                    <div class="layui-col-xs4" >
+                        <input type="radio" name="radio-3" id="radio-1-7" checked="checked" onclick="setScan()">
+                        <label for="radio-1-7"  style="float: left;">买</label>
+                    </div>
+                    <div class="layui-col-xs4" style="padding-top: 8px">
+                        <input type="radio" name="radio-3" id="radio-1-8" >
+                        <label for="radio-1-8" style="">卖</label>
+                    </div>
+                    <div class="layui-col-xs4">
+                        <input type="radio" name="radio-3" id="radio-1-9">
+                        <label for="radio-1-9" style="float: right; ">全部</label>
+                    </div>
+                </div>
+            </div>
+
+            跟单类型：
+            <div class="layui-row">
+
+                <div class="layui-row radio-1" style=" padding: 10px 0 0 0">
+                    <div class="layui-col-xs4" >
+                        <input type="radio" name="radio-4" id="radio-1-10" checked="checked" onclick="setScan()">
+                        <label for="radio-1-10"  style="float: left;">买</label>
+                    </div>
+                    <div class="layui-col-xs4" style="padding-top: 8px">
+                        <input type="radio" name="radio-4" id="radio-1-11" >
+                        <label for="radio-1-11" style="">卖</label>
+                    </div>
+                    <div class="layui-col-xs4">
+                        <!--<input type="radio" name="radio-4" id="radio-1-12">-->
+                        <!--<label for="radio-1-12" style="float: right; ">全部</label>-->
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <form style="padding-bottom: 10px" onsubmit="return sendFrom();">
+                备注: <input type="text" name="fname" maxlength="6" required/>
+                Last name: <input type="text" name="lname" pattern="^(([1-9]\d?)|100)$" placeholder="1 - 100" required/>
+                <input type="submit" value="Submit" />
+            </form>
+
+        </div>
+
+
+    </div>
+
+</body>
+
+<style>
+    .radio-1{
+        margin: 0 auto;
+        padding: 3% 0;
+        background-color: #FFFFFF;
+        text-align: center;
+    }
+
+    /* 移除单选按钮系统默认样式 */
+    .radio-1 input{
+        display: none;
+    }
+
+    /* 单选按钮默认样式 + 未选中样式 */
+    .radio-1 label{
+        align-content: center;
+        position: relative;
+        color: #24A9E1;
+        background-color: #FFFFFF;
+        border: 2px solid #24A9E1;
+        width: 70px;
+        height: 18px;
+        padding: 5px 25px 5px 25px;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    /* 单选按钮未选中样式 */
+    .radio-1 input:checked+label:after{
+        transform: scale(1);
+        transition: all .2s ease-in;
+    }
+
+    /* 单选按钮选中样式 */
+    .radio-1 input:checked+label{
+        background-color: #24A9E1;
+        color: #FFFFFF;
+        transition: all .2s ease-out;
+    }
+
+    /* 单选按钮不可禁用样式 */
+    .radio-1 input:disabled+label{
+        background-color: #FFFFFF;
+        color: #888888;
+        border-color: #888888;
+        transition: all .2s ease-out;
+    }
+
+
+
+</style>
+
+<script>
+
+    layui.use('layer', function() { //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+    });
+
+    var elementById = document.getElementById('tipsImag');
+    elementById.addEventListener("mouseover", function (evt) {
+
+            layer.tips('Hi，我是tips', '#tipsImag',  {
+                tips: [2, '#24A9E1'], //还可配置颜色
+                time: 1000
+            });
+            console.log("moveIn");
+        }
+        , false);
+
+    var elementById1 = document.getElementById('tipsImag1');
+    elementById1.addEventListener("mouseover", function (ev) {
+
+            layer.tips('Hi，我是tips', '#tipsImag1',  {
+                tips: [2, '#24A9E1'], //还可配置颜色
+                time: 1000
+            });
+            console.log("moveIn");
+        }
+        , false);
+
+
+    var elementById2 = document.getElementById('radio-1-5');
+    elementById2.disabled = false;
+
+
+    function setScan() {
+        console.log("123123");
+    }
+    
+    function sendFrom() {
+        var elementById2 = document.getElementById('radio-1-5');
+        elementById2.disabled = true;
+        return false;
+    }
+    
+</script>
+
+</html>

@@ -1,0 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+.blue-slide {
+  background: #4390EE;
+}
+
+.white-slide {
+  background: #FFFFFF;
+}
+.red-slide {
+  background: #CA4040;
+}
+.orange-slide {
+  background: #FF8604;
+}
+.swiper-slide {
+  line-height: 300px;
+  color: #fff;
+  font-size: 36px;
+  text-align: center;
+}
+
+.swiper-container {
+  background-color: #222222;
+}

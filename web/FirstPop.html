@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FirstPop</title>
+    <link rel="stylesheet" href="layui/css/layui.css"/>
+    <script src="layui/layui.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body>
+
+<textarea id="data" style="width: 300px; height: 200px">123123</textarea>
+<button id="save">save </button>
+
+</body>
+
+<script>
+
+    // 加载模块
+    layui.config({
+        base: 'js/' //假设这是你存放拓展模块的根目录
+    }).extend({ //设定模块别名
+        sysdata: 'sysdata'
+    });
+
+    function clickSave() {
+
+    }
+
+    layui.use(['layer', 'form', 'sysdata'], function () {
+        var $ = layui.jquery
+            , sysdata = layui.sysdata;
+
+        var datakey = getUrlParam("datakey");
+        var d = sysdata.getDataObj({key: datakey});
+        $("#data").val(d);
+
+
+        $("#save").click(function () {
+            // var str = $("#data").val();// 获取界面上的json内容
+            var data =$("#data").val(); // 转化成json格式的数据
+
+            // 利用传过来的key 保存数据
+            sysdata.saveDataObj({
+                key: datakey
+                , data: data
+            });
+        });
+
+        /**
+         * 获取传过来的参数
+         */
+        function getUrlParam(k) {
+            var regExp = new RegExp('([?]|&)' + k + '=([^&]*)(&|$)');
+            var result = window.location.href.match(regExp);
+            if (result) {
+                return decodeURIComponent(result[2]);
+            } else {
+                return null;
+            }
+        }
+    });
+
+</script>
+
+</html>
